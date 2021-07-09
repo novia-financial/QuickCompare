@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Text;
+    using QuickCompareModel.DatabaseSchema;
 
     public class TableSubItemWithPropertiesDifferenceList
         : TableSubItemDifferenceList
@@ -10,6 +11,9 @@
             : base(existsInDatabase1, existsInDatabase2)
         {
         }
+
+        public TableSubItemWithPropertiesDifferenceList(bool existsInDatabase1, bool existsInDatabase2, string itemType)
+            : base(existsInDatabase1, existsInDatabase2) => this.ItemType = itemType;
 
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
             = new Dictionary<string, ExtendedPropertyDifference>();

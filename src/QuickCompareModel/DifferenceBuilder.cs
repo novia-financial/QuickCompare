@@ -45,12 +45,12 @@
 
             if (options.CompareSynonyms)
             {
-                //
+                InspectSynonyms();
             }
 
             if (options.CompareObjects)
             {
-                //
+                InspectRoutines();
             }
 
             return Differences.ToString();
@@ -370,8 +370,7 @@
         {
             foreach (var index1 in Database1.SqlTables[tableName].Indexes)
             {
-                var diff = new TableSubItemWithPropertiesDifferenceList(true, false);
-                diff.ItemType = index1.ITEM_TYPE;
+                var diff = new TableSubItemWithPropertiesDifferenceList(true, false, index1.ITEM_TYPE);
 
                 foreach (var index2 in Database2.SqlTables[tableName].Indexes)
                 {
@@ -626,32 +625,32 @@
                     {
                         if (trigger2.IS_UPDATE != trigger1.IS_UPDATE)
                         {
-                            //
+                            diff.Differences.Add($"update is different - is {(trigger1.IS_UPDATE ? string.Empty : "not ")}update in database 1 and is {(trigger2.IS_UPDATE ? string.Empty : "not ")}update in database 2");
                         }
 
                         if (trigger2.IS_DELETE != trigger1.IS_DELETE)
                         {
-                            //
+                            diff.Differences.Add($"delete is different - is {(trigger1.IS_DELETE ? string.Empty : "not ")}delete in database 1 and is {(trigger2.IS_DELETE ? string.Empty : "not ")}delete in database 2");
                         }
 
                         if (trigger2.IS_INSERT != trigger1.IS_INSERT)
                         {
-                            //
+                            diff.Differences.Add($"insert is different - is {(trigger1.IS_INSERT ? string.Empty : "not ")}insert in database 1 and is {(trigger2.IS_INSERT ? string.Empty : "not ")}insert in database 2");
                         }
 
                         if (trigger2.IS_AFTER != trigger1.IS_AFTER)
                         {
-                            //
+                            diff.Differences.Add($"after is different - is {(trigger1.IS_AFTER ? string.Empty : "not ")}after in database 1 and is {(trigger2.IS_AFTER ? string.Empty : "not ")}after in database 2");
                         }
 
                         if (trigger2.IS_INSTEAD_OF != trigger1.IS_INSTEAD_OF)
                         {
-                            //
+                            diff.Differences.Add($"instead-of is different - is {(trigger1.IS_INSTEAD_OF ? string.Empty : "not ")}instead-of in database 1 and is {(trigger2.IS_INSTEAD_OF ? string.Empty : "not ")}instead-of in database 2");
                         }
 
                         if (trigger2.IS_DISABLED != trigger1.IS_DISABLED)
                         {
-                            //
+                            diff.Differences.Add($"disabled is different - is {(trigger1.IS_DISABLED ? string.Empty : "not ")}disabled in database 1 and is {(trigger2.IS_DISABLED ? string.Empty : "not ")}disabled in database 2");
                         }
 
                         if (BaseDifference.CleanDefinitionText(trigger1.TRIGGER_CONTENT, true) != BaseDifference.CleanDefinitionText(trigger2.TRIGGER_CONTENT, true))
@@ -672,6 +671,210 @@
                 if (!Differences.TableDifferences[tableName].TriggerDifferences.ContainsKey(trigger2.TRIGGER_NAME))
                 {
                     Differences.TableDifferences[tableName].TriggerDifferences.Add(trigger2.TRIGGER_NAME, new TableSubItemDifferenceList(false, true));
+                }
+            }
+        }
+
+        private void InspectSynonyms()
+        {
+            foreach (var synonym1 in Database1.SqlSynonyms.Keys)
+            {
+                var diff = new DatabaseObjectDifferenceList(true, false);
+                foreach (var synonym2 in Database2.SqlSynonyms.Keys)
+                {
+                    if (synonym2 == synonym1)
+                    {
+                        if (this.options.CompareProperties)
+                        {
+                            InspectObjectProperties(synonym2, diff);
+                        }
+
+                        if (this.options.ComparePermissions)
+                        {
+                            InspectObjectPermissions(synonym2, PERMISSION_OBJECT_TYPE.SYNONYM, diff);
+                        }
+
+                        diff.ObjectDefinition1 = Database1.SqlSynonyms[synonym2];
+                        diff.ObjectDefinition2 = Database2.SqlSynonyms[synonym2];
+
+                        diff.ExistsInDatabase2 = true;
+                        break;
+                    }
+                }
+
+                Differences.SynonymDifferences.Add(synonym1, diff);
+            }
+
+            foreach (var synonym2 in Database2.SqlSynonyms.Keys)
+            {
+                if (!Differences.SynonymDifferences.ContainsKey(synonym2))
+                {
+                    Differences.SynonymDifferences.Add(synonym2, new DatabaseObjectDifferenceList(false, true));
+                }
+            }
+        }
+
+        private void InspectViews()
+        {
+            foreach (var view1 in Database1.Views.Keys)
+            {
+                var diff = new DatabaseObjectDifferenceList(true, false);
+                foreach (var view2 in Database2.Views.Keys)
+                {
+                    if (view2 == view1)
+                    {
+                        if (this.options.CompareProperties)
+                        {
+                            InspectObjectProperties(view2, diff);
+                        }
+
+                        if (this.options.ComparePermissions)
+                        {
+                            InspectObjectPermissions(view2, PERMISSION_OBJECT_TYPE.VIEW, diff);
+                        }
+
+                        diff.ObjectDefinition1 = Database1.SqlSynonyms[view2];
+                        diff.ObjectDefinition2 = Database2.SqlSynonyms[view2];
+
+                        diff.ExistsInDatabase2 = true;
+                        break;
+                    }
+                }
+
+                Differences.ViewDifferences.Add(view1, diff);
+            }
+
+            foreach (var view2 in Database2.Views.Keys)
+            {
+                if (!Differences.ViewDifferences.ContainsKey(view2))
+                {
+                    Differences.ViewDifferences.Add(view2, new DatabaseObjectDifferenceList(false, true));
+                }
+            }
+        }
+
+        private void InspectRoutines()
+        {
+            foreach (var routine1 in Database1.UserRoutines.Keys)
+            {
+                var diff = new DatabaseObjectDifferenceList(true, false);
+                var isFunction = Database1.UserRoutines[routine1].ROUTINE_TYPE.ToLower() == "function";
+                foreach (var routine2 in Database2.UserRoutines.Keys)
+                {
+                    if (routine2 == routine1)
+                    {
+                        if (this.options.CompareProperties)
+                        {
+                            InspectObjectProperties(routine2, diff);
+                        }
+
+                        if (this.options.ComparePermissions)
+                        {
+                            InspectObjectPermissions(routine2, isFunction ? PERMISSION_OBJECT_TYPE.SQL_FUNCTION : PERMISSION_OBJECT_TYPE.SQL_STORED_PROCEDURE, diff);
+                        }
+
+                        diff.ObjectDefinition1 = Database1.SqlSynonyms[routine2];
+                        diff.ObjectDefinition2 = Database2.SqlSynonyms[routine2];
+
+                        diff.ExistsInDatabase2 = true;
+                        break;
+                    }
+                }
+
+                if (isFunction)
+                {
+                    Differences.FunctionDifferences.Add(routine1, diff);
+                }
+                else
+                {
+                    Differences.StoredProcedureDifferences.Add(routine1, diff);
+                }
+            }
+
+            foreach (var routine2 in Database2.UserRoutines.Keys)
+            {
+                if (Database2.UserRoutines[routine2].ROUTINE_TYPE.ToLower() == "function")
+                {
+                    if (!Differences.FunctionDifferences.ContainsKey(routine2))
+                    {
+                        Differences.FunctionDifferences.Add(routine2, new DatabaseObjectDifferenceList(false, true));
+                    }
+                }
+                else
+                {
+                    if (!Differences.StoredProcedureDifferences.ContainsKey(routine2))
+                    {
+                        Differences.StoredProcedureDifferences.Add(routine2, new DatabaseObjectDifferenceList(false, true));
+                    }
+                }
+            }
+        }
+
+        private void InspectObjectProperties(string objectName, DatabaseObjectDifferenceList objectDiff)
+        {
+            foreach (var property1 in Database1.SqlExtendedProperties)
+            {
+                if (property1.TYPE == PROPERTY_OBJECT_TYPE.ROUTINE && property1.OBJECT_NAME == objectName)
+                {
+                    var diff = new ExtendedPropertyDifference(true, false);
+                    foreach (var property2 in Database2.SqlExtendedProperties)
+                    {
+                        if (property2.FULL_ID == property1.FULL_ID)
+                        {
+                            diff.ExistsInDatabase2 = true;
+                            diff.Value1 = property1.PROPERTY_VALUE;
+                            diff.Value2 = property2.PROPERTY_VALUE;
+                            break;
+                        }
+                    }
+
+                    objectDiff.ExtendedPropertyDifferences.Add(property1.PROPERTY_NAME, diff);
+                }
+            }
+
+            foreach (var property2 in Database2.SqlExtendedProperties)
+            {
+                if (property2.TYPE == PROPERTY_OBJECT_TYPE.ROUTINE && property2.OBJECT_NAME == objectName)
+                {
+                    if (!objectDiff.ExtendedPropertyDifferences.ContainsKey(property2.PROPERTY_NAME))
+                    {
+                        objectDiff.ExtendedPropertyDifferences.Add(property2.PROPERTY_NAME, new ExtendedPropertyDifference(false, true));
+                    }
+                }
+            }
+        }
+
+        private void InspectObjectPermissions(string objectName, PERMISSION_OBJECT_TYPE objectType, DatabaseObjectDifferenceList objectDiff)
+        {
+            foreach (var permission1 in Database1.SqlPermissions)
+            {
+                if (permission1.TYPE == objectType && permission1.OBJECT_NAME == objectName)
+                {
+                    var diff = new BaseDifference(true, false);
+                    foreach (var permission2 in Database2.SqlPermissions)
+                    {
+                        if (permission2.FULL_ID == permission1.FULL_ID)
+                        {
+                            diff.ExistsInDatabase2 = true;
+                            break;
+                        }
+                    }
+
+                    if (!objectDiff.PermissionDifferences.ContainsKey(permission1.ToString()))
+                    {
+                        objectDiff.PermissionDifferences.Add(permission1.ToString(), diff);
+                    }
+                }
+            }
+
+            foreach (var permission2 in Database2.SqlPermissions)
+            {
+                if (permission2.TYPE == objectType && permission2.OBJECT_NAME == objectName)
+                {
+                    if (!objectDiff.PermissionDifferences.ContainsKey(permission2.ToString()))
+                    {
+                        objectDiff.PermissionDifferences.Add(permission2.ToString(), new BaseDifference(false, true));
+                    }
                 }
             }
         }
