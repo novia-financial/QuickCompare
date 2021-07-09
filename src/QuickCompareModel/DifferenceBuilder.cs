@@ -50,6 +50,7 @@
 
             if (options.CompareObjects)
             {
+                InspectViews();
                 InspectRoutines();
             }
 

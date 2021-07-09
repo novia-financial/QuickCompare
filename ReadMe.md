@@ -10,3 +10,5 @@ Next the engine inspects models of both databases, building a set of Difference 
 The Difference objects also act as a report generator, with overridden ToString methods a generated report will list all database differences.
 
 Input parameters are accepted via an IOptions implementation, __QuickCompareOptions__.
+
+_Note that this was created as part of an Innovation Day event so is lacking initial unit tests._
