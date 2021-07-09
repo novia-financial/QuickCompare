@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Text;
-    using QuickCompareModel.DatabaseSchema;
 
     public class TableSubItemWithPropertiesDifferenceList
         : TableSubItemDifferenceList

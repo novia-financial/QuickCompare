@@ -1,7 +1,7 @@
-﻿using System.Text.RegularExpressions;
-
-namespace QuickCompareModel.DatabaseDifferences
+﻿namespace QuickCompareModel.DatabaseDifferences
 {
+    using System.Text.RegularExpressions;
+
     public class BaseDifference
     {
         public const string TabIndent = "     ";

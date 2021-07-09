@@ -35,6 +35,15 @@
 
         public string ConnectionStr { get; set; }
 
+        public string FriendlyName
+        {
+            get
+            {
+                var builder = new SqlConnectionStringBuilder(ConnectionStr);
+                return $"[{builder.DataSource}].[{builder.InitialCatalog}]";
+            }
+        }
+
         public Dictionary<string, SqlTable> SqlTables { get; set; } = new Dictionary<string, SqlTable>();
 
         public Dictionary<string, string> Views { get; set; } = new Dictionary<string, string>();

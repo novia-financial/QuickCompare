@@ -31,8 +31,8 @@
 
             Differences = new Differences
             {
-                Database1 = $"[{ExtractConnectionPart(options.ConnectionString1, "server")}].[{ExtractConnectionPart(options.ConnectionString1, "database")}]",
-                Database2 = $"[{ExtractConnectionPart(options.ConnectionString2, "server")}].[{ExtractConnectionPart(options.ConnectionString2, "database")}]"
+                Database1 = this.Database1.FriendlyName,
+                Database2 = this.Database2.FriendlyName,
             };
 
             if (options.CompareProperties)
@@ -889,19 +889,6 @@
             Database1 = new SqlDatabase(options.ConnectionString1, options.CompareObjects, options.CompareIndexes, options.ComparePermissions, options.CompareProperties, options.CompareTriggers, options.CompareSynonyms);
 
             Database2 = new SqlDatabase(options.ConnectionString2, options.CompareObjects, options.CompareIndexes, options.ComparePermissions, options.CompareProperties, options.CompareTriggers, options.CompareSynonyms);
-        }
-
-        private string ExtractConnectionPart(string connectionString, string connectionPart)
-        {
-            connectionPart += "=";
-            var startIndex = connectionString.ToUpper().IndexOf(connectionPart.ToUpper()) + connectionPart.Length;
-            var endIndex = connectionString.IndexOf(';', startIndex);
-            if (endIndex == -1)
-            {
-                endIndex = connectionString.Length;
-            }
-
-            return connectionString[startIndex..endIndex];
         }
     }
 }
