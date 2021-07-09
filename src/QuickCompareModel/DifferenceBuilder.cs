@@ -861,10 +861,7 @@
                         }
                     }
 
-                    if (!objectDiff.PermissionDifferences.ContainsKey(permission1.ToString()))
-                    {
-                        objectDiff.PermissionDifferences.Add(permission1.ToString(), diff);
-                    }
+                    objectDiff.PermissionDifferences.Add(permission1.ToString(), diff);
                 }
             }
 

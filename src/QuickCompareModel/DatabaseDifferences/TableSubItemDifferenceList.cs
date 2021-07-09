@@ -40,7 +40,7 @@
         }
 
         public override string ToString() => IsDifferent
-            ? !ExistsInBothDatabases ? ExistenceDifference() : DifferenceList()
+            ? !ExistsInBothDatabases ? base.ToString() : DifferenceList()
             : string.Empty;
     }
 }

@@ -35,16 +35,16 @@
 
         public void SetColumnsFromString(string value)
         {
-            var cols = value.Split(',');
-            foreach (var col in cols)
+            var columnNames = value.Split(',');
+            foreach (var columnName in columnNames)
             {
-                if (col.IndexOf("(-)") > 0)
+                if (columnName.IndexOf("(-)") > 0)
                 {
-                    COLUMNS.Add(col.Replace("(-)", "").Trim(), false);
+                    COLUMNS.Add(columnName.Replace("(-)", "").Trim(), false);
                 }
                 else
                 {
-                    COLUMNS.Add(col.Trim(), true);
+                    COLUMNS.Add(columnName.Trim(), true);
                 }
             }
         }

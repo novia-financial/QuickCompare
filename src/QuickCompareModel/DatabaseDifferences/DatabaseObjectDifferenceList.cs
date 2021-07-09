@@ -63,6 +63,11 @@
                 return string.Empty;
             }
 
+            if (!ExistsInBothDatabases)
+            {
+                return base.ToString();
+            }
+
             var sb = new StringBuilder("\r\n");
 
             if (DefinitionsAreDifferent)

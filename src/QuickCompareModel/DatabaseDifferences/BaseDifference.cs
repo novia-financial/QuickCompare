@@ -18,9 +18,7 @@
 
         public bool ExistsInBothDatabases => ExistsInDatabase1 && ExistsInDatabase2;
 
-        public string ExistenceDifference() => ExistsInBothDatabases ? string.Empty : $"does not exist in database {(ExistsInDatabase1 ? 2 : 1)}";
-
-        public override string ToString() => ExistenceDifference();
+        public override string ToString() => ExistsInBothDatabases ? string.Empty : $"does not exist in database {(ExistsInDatabase1 ? 2 : 1)}";
 
         public static string CleanDefinitionText(string definition, bool stripWhiteSpace)
         {

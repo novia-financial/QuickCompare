@@ -143,7 +143,7 @@
 
             if (!ExistsInBothDatabases)
             {
-                return ExistenceDifference();
+                return base.ToString();
             }
 
             var sb = new StringBuilder("\r\n");

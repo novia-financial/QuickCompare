@@ -16,9 +16,7 @@
 
         public string COLUMN_NAME { get; set; }
 
-        public string FULL_ID => !string.IsNullOrEmpty(ROLE_NAME)
-                    ? $"[{ROLE_NAME}].[].[{PERMISSION_TYPE}].[{PERMISSION_STATE}].[{OBJECT_TYPE}].[{OBJECT_NAME}].[{COLUMN_NAME}]"
-                    : $"[].[{USER_NAME}].[{PERMISSION_TYPE}].[{PERMISSION_STATE}].[{OBJECT_TYPE}].[{OBJECT_NAME}].[{COLUMN_NAME}]";
+        public string FULL_ID => $"[{ROLE_NAME}].[{USER_NAME}].[{PERMISSION_TYPE}].[{PERMISSION_STATE}].[{OBJECT_TYPE}].[{OBJECT_NAME}].[{COLUMN_NAME}]";
 
         public PERMISSION_OBJECT_TYPE TYPE => OBJECT_TYPE switch
         {
@@ -33,18 +31,8 @@
         };
 
         public override string ToString() => PERMISSION_TYPE == "REFERENCES"
-                ? string.Format(
-                    "REFERENCES column: [{0}] {1}for {2}: [{3}]",
-                    COLUMN_NAME,
-                    PERMISSION_STATE == "GRANT" ? string.Empty : "DENIED ",
-                    string.IsNullOrEmpty(ROLE_NAME) ? "user" : "role",
-                    string.IsNullOrEmpty(ROLE_NAME) ? USER_NAME : ROLE_NAME)
-                : string.Format(
-                    "[{0}] {1}for {2}: [{3}]",
-                    PERMISSION_TYPE,
-                    PERMISSION_STATE == "GRANT" ? string.Empty : "DENIED ",
-                    string.IsNullOrEmpty(ROLE_NAME) ? "user" : "role",
-                    string.IsNullOrEmpty(ROLE_NAME) ? USER_NAME : ROLE_NAME);
+                ? $"REFERENCES column: [{COLUMN_NAME}] {(PERMISSION_STATE == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(ROLE_NAME) ? "user" : "role")}: [{(string.IsNullOrEmpty(ROLE_NAME) ? USER_NAME : ROLE_NAME)}]"
+                : $"[{PERMISSION_TYPE}] {(PERMISSION_STATE == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(ROLE_NAME) ? "user" : "role")}: [{(string.IsNullOrEmpty(ROLE_NAME) ? USER_NAME : ROLE_NAME)}]";
     }
 
     internal enum PERMISSION_OBJECT_TYPE
