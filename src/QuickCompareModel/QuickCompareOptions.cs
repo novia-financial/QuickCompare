@@ -1,29 +1,68 @@
 ﻿namespace QuickCompareModel
 {
+    /// <summary>
+    /// Settings for the database comparison.
+    /// </summary>
     public class QuickCompareOptions
     {
+        /// <summary>
+        /// Gets or sets the connection string for the first database.
+        /// </summary>
         public string ConnectionString1 { get; set; }
 
+        /// <summary>
+        /// Gets or sets the connection string for the second database.
+        /// </summary>
         public string ConnectionString2 { get; set; }
 
-        public bool CompareColumns { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare table columns.
+        /// </summary>
+        public bool CompareColumns { get; set; } = true;
 
-        public bool CompareRelations { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare table relations.
+        /// </summary>
+        public bool CompareRelations { get; set; } = true;
 
-        public bool CompareObjects { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare views/functions/procedures.
+        /// </summary>
+        public bool CompareObjects { get; set; } = true;
 
-        public bool IgnoreSQLComments { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to ignore remarks and comments.
+        /// </summary>
+        public bool IgnoreSQLComments { get; set; } = true;
 
-        public bool CompareIndexes { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare indexes.
+        /// </summary>
+        public bool CompareIndexes { get; set; } = true;
 
-        public bool ComparePermissions { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare permissions.
+        /// </summary>
+        public bool ComparePermissions { get; set; } = true;
 
-        public bool CompareProperties { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare extended properties.
+        /// </summary>
+        public bool CompareProperties { get; set; } = true;
 
-        public bool CompareTriggers { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare triggers.
+        /// </summary>
+        public bool CompareTriggers { get; set; } = true;
 
-        public bool CompareSynonyms { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare synonyms.
+        /// </summary>
+        public bool CompareSynonyms { get; set; } = true;
 
-        public bool CompareOrdinalPositions { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare ordinal position of columns.
+        /// </summary>
+        public bool CompareOrdinalPositions { get; set; } = true;
     }
 }
