@@ -3,6 +3,9 @@
     using System.Collections.Generic;
     using System.Text;
 
+    /// <summary>
+    /// Model to hold lists of various differences between two databases.
+    /// </summary>
     public class Differences
     {
         public string Database1 { get; set; }

@@ -2,50 +2,50 @@
 {
     internal class SqlColumnDetail
     {
-        public string TABLE_SCHEMA { get; set; }
+        public string TableSchema { get; set; }
 
-        public string TABLE_NAME { get; set; }
+        public string TableName { get; set; }
 
-        public string COLUMN_NAME { get; set; }
+        public string ColumnName { get; set; }
 
-        public int ORDINAL_POSITION { get; set; }
+        public int OrdinalPosition { get; set; }
 
-        public string COLUMN_DEFAULT { get; set; }
+        public string ColumnDefault { get; set; }
 
-        public bool IS_NULLABLE { get; set; }
+        public bool IsNullable { get; set; }
 
-        public string DATA_TYPE { get; set; }
+        public string DataType { get; set; }
 
-        public int? CHARACTER_MAXIMUM_LENGTH { get; set; }
+        public int? CharacterMaximumLength { get; set; }
 
-        public int? CHARACTER_OCTET_LENGTH { get; set; }
+        public int? CharacterOctetLength { get; set; }
 
-        public int? NUMERIC_PRECISION { get; set; }
+        public int? NumericPrecision { get; set; }
 
-        public int? NUMERIC_PRECISION_RADIX { get; set; }
+        public int? NumericPrecisionRadix { get; set; }
 
-        public int? NUMERIC_SCALE { get; set; }
+        public int? NumericScale { get; set; }
 
-        public int? DATETIME_PRECISION { get; set; }
+        public int? DatetimePrecision { get; set; }
 
-        public string CHARACTER_SET_NAME { get; set; }
+        public string CharacterSetName { get; set; }
 
-        public string COLLATION_NAME { get; set; }
+        public string CollationName { get; set; }
 
-        public bool IS_FULL_TEXT_INDEXED { get; set; }
+        public bool IsFullTextIndexed { get; set; }
 
-        public bool IS_COMPUTED { get; set; }
+        public bool IsComputed { get; set; }
 
-        public bool IS_IDENTITY { get; set; }
+        public bool IsIdentity { get; set; }
 
-        public decimal? IDENTITY_SEED { get; set; }
+        public decimal? IdentitySeed { get; set; }
 
-        public decimal? IDENTITY_INCREMENT { get; set; }
+        public decimal? IdentityIncrement { get; set; }
 
-        public bool IS_SPARSE { get; set; }
+        public bool IsSparse { get; set; }
 
-        public bool IS_COLUMN_SET { get; set; }
+        public bool IsColumnSet { get; set; }
 
-        public string FULL_ID => $"[{TABLE_NAME}].[{COLUMN_NAME}]";
+        public string FullId => $"[{TableName}].[{ColumnName}]";
     }
 }

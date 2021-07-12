@@ -2,28 +2,28 @@
 {
     internal class SqlTrigger
     {
-        public string FILEGROUP { get; set; }
+        public string FileGroup { get; set; }
 
-        public string TRIGGER_NAME { get; set; }
+        public string TriggerName { get; set; }
 
-        public string TRIGGER_OWNER { get; set; }
+        public string TriggerOwner { get; set; }
 
-        public string TABLE_SCHEMA { get; set; }
+        public string TableSchema { get; set; }
 
-        public string TABLE_NAME { get; set; }
+        public string TableName { get; set; }
 
-        public bool IS_UPDATE { get; set; }
+        public bool IsUpdate { get; set; }
 
-        public bool IS_DELETE { get; set; }
+        public bool IsDelete { get; set; }
 
-        public bool IS_INSERT { get; set; }
+        public bool IsInsert { get; set; }
 
-        public bool IS_AFTER { get; set; }
+        public bool IsAfter { get; set; }
 
-        public bool IS_INSTEAD_OF { get; set; }
+        public bool IsInsteadOf { get; set; }
 
-        public bool IS_DISABLED { get; set; }
+        public bool IsDisabled { get; set; }
 
-        public string TRIGGER_CONTENT { get; set; }
+        public string TriggerContent { get; set; }
     }
 }

@@ -2,42 +2,42 @@
 {
     internal class SqlExtendedProperty
     {
-        public string PROPERTY_TYPE { get; set; }
+        public string PropertyType { get; set; }
 
-        public string OBJECT_NAME { get; set; }
+        public string ObjectName { get; set; }
 
-        public string COLUMN_NAME { get; set; }
+        public string ColumnName { get; set; }
 
-        public string PROPERTY_NAME { get; set; }
+        public string PropertyName { get; set; }
 
-        public string PROPERTY_VALUE { get; set; }
+        public string PropertyValue { get; set; }
 
-        public string TABLE_NAME { get; set; }
+        public string TableName { get; set; }
 
-        public string INDEX_NAME { get; set; }
+        public string IndexName { get; set; }
 
-        public string FULL_ID => !string.IsNullOrEmpty(OBJECT_NAME)
-                    ? string.IsNullOrEmpty(COLUMN_NAME)
-                        ? $"[{OBJECT_NAME}].[{PROPERTY_NAME}].[{TYPE}]"
-                        : $"[{OBJECT_NAME}].[{PROPERTY_NAME}].[{COLUMN_NAME}].[{TYPE}]"
-                    : PROPERTY_NAME;
+        public string FullId => !string.IsNullOrEmpty(ObjectName)
+                    ? string.IsNullOrEmpty(ColumnName)
+                        ? $"[{ObjectName}].[{PropertyName}].[{Type}]"
+                        : $"[{ObjectName}].[{PropertyName}].[{ColumnName}].[{Type}]"
+                    : PropertyName;
 
-        public PROPERTY_OBJECT_TYPE TYPE => PROPERTY_TYPE != "INDEX"
-                    ? !string.IsNullOrEmpty(TABLE_NAME)
-                        ? string.IsNullOrEmpty(COLUMN_NAME) ? PROPERTY_OBJECT_TYPE.TABLE : PROPERTY_OBJECT_TYPE.TABLE_COLUMN
-                        : PROPERTY_TYPE != "DATABASE"
-                            ? string.IsNullOrEmpty(COLUMN_NAME) ? PROPERTY_OBJECT_TYPE.ROUTINE : PROPERTY_OBJECT_TYPE.ROUTINE_COLUMN
-                            : PROPERTY_OBJECT_TYPE.DATABASE
-                    : PROPERTY_OBJECT_TYPE.INDEX;
+        public PropertyObjectType Type => PropertyType != "INDEX"
+                    ? !string.IsNullOrEmpty(TableName)
+                        ? string.IsNullOrEmpty(ColumnName) ? PropertyObjectType.Table : PropertyObjectType.TableColumn
+                        : PropertyType != "DATABASE"
+                            ? string.IsNullOrEmpty(ColumnName) ? PropertyObjectType.Routine : PropertyObjectType.RoutineColumn
+                            : PropertyObjectType.Database
+                    : PropertyObjectType.Index;
     }
 
-    internal enum PROPERTY_OBJECT_TYPE
+    internal enum PropertyObjectType
     {
-        DATABASE,
-        ROUTINE,
-        ROUTINE_COLUMN,
-        TABLE,
-        TABLE_COLUMN,
-        INDEX,
+        Database,
+        Routine,
+        RoutineColumn,
+        Table,
+        TableColumn,
+        Index,
     }
 }

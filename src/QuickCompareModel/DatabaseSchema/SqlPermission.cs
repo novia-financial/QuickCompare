@@ -2,46 +2,46 @@
 {
     internal class SqlPermission
     {
-        public string ROLE_NAME { get; set; }
+        public string RoleName { get; set; }
 
-        public string USER_NAME { get; set; }
+        public string UserName { get; set; }
 
-        public string PERMISSION_TYPE { get; set; }
+        public string PermissionType { get; set; }
 
-        public string PERMISSION_STATE { get; set; }
+        public string PermissionState { get; set; }
 
-        public string OBJECT_TYPE { get; set; }
+        public string ObjectType { get; set; }
 
-        public string OBJECT_NAME { get; set; }
+        public string ObjectName { get; set; }
 
-        public string COLUMN_NAME { get; set; }
+        public string ColumnName { get; set; }
 
-        public string FULL_ID => $"[{ROLE_NAME}].[{USER_NAME}].[{PERMISSION_TYPE}].[{PERMISSION_STATE}].[{OBJECT_TYPE}].[{OBJECT_NAME}].[{COLUMN_NAME}]";
+        public string FullId => $"[{RoleName}].[{UserName}].[{PermissionType}].[{PermissionState}].[{ObjectType}].[{ObjectName}].[{ColumnName}]";
 
-        public PERMISSION_OBJECT_TYPE TYPE => OBJECT_TYPE switch
+        public PermissionObjectType Type => ObjectType switch
         {
-            "SQL_STORED_PROCEDURE" => PERMISSION_OBJECT_TYPE.SQL_STORED_PROCEDURE,
-            "USER_TABLE" => PERMISSION_OBJECT_TYPE.USER_TABLE,
-            "SYNONYM" => PERMISSION_OBJECT_TYPE.SYNONYM,
-            "VIEW" => PERMISSION_OBJECT_TYPE.VIEW,
-            "SQL_SCALAR_FUNCTION" => PERMISSION_OBJECT_TYPE.SQL_FUNCTION,
-            "SQL_TABLE_VALUED_FUNCTION" => PERMISSION_OBJECT_TYPE.SQL_FUNCTION,
-            "SQL_INLINE_TABLE_VALUED_FUNCTION" => PERMISSION_OBJECT_TYPE.SQL_FUNCTION,
-            _ => PERMISSION_OBJECT_TYPE.DATABASE,
+            "SQL_STORED_PROCEDURE" => PermissionObjectType.SqlStoredProcedure,
+            "USER_TABLE" => PermissionObjectType.UserTable,
+            "SYNONYM" => PermissionObjectType.Synonym,
+            "VIEW" => PermissionObjectType.View,
+            "SQL_SCALAR_FUNCTION" => PermissionObjectType.SqlFunction,
+            "SQL_TABLE_VALUED_FUNCTION" => PermissionObjectType.SqlFunction,
+            "SQL_INLINE_TABLE_VALUED_FUNCTION" => PermissionObjectType.SqlFunction,
+            _ => PermissionObjectType.Database,
         };
 
-        public override string ToString() => PERMISSION_TYPE == "REFERENCES"
-                ? $"REFERENCES column: [{COLUMN_NAME}] {(PERMISSION_STATE == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(ROLE_NAME) ? "user" : "role")}: [{(string.IsNullOrEmpty(ROLE_NAME) ? USER_NAME : ROLE_NAME)}]"
-                : $"[{PERMISSION_TYPE}] {(PERMISSION_STATE == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(ROLE_NAME) ? "user" : "role")}: [{(string.IsNullOrEmpty(ROLE_NAME) ? USER_NAME : ROLE_NAME)}]";
+        public override string ToString() => PermissionType == "REFERENCES"
+                ? $"REFERENCES column: [{ColumnName}] {(PermissionState == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(RoleName) ? "user" : "role")}: [{(string.IsNullOrEmpty(RoleName) ? UserName : RoleName)}]"
+                : $"[{PermissionType}] {(PermissionState == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(RoleName) ? "user" : "role")}: [{(string.IsNullOrEmpty(RoleName) ? UserName : RoleName)}]";
     }
 
-    internal enum PERMISSION_OBJECT_TYPE
+    internal enum PermissionObjectType
     {
-        DATABASE,
-        SQL_STORED_PROCEDURE,
-        SQL_FUNCTION,
-        SYNONYM,
-        USER_TABLE,
-        VIEW,
+        Database,
+        SqlStoredProcedure,
+        SqlFunction,
+        Synonym,
+        UserTable,
+        View,
     }
 }

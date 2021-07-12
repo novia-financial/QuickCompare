@@ -2,8 +2,8 @@
 {
     internal class SqlUniqueConstraint
     {
-        public string CONTRAINT_NAME { get; set; }
+        public string ConstraintName { get; set; }
 
-        public string COLUMN_LIST { get; set; }
+        public string ColumnList { get; set; }
     }
 }

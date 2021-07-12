@@ -16,7 +16,7 @@
         {
             foreach (var index in Indexes)
             {
-                if (index.UNIQUE && index.COLUMNS.ContainsKey(columnName) && index.COLUMNS.Count == 1)
+                if (index.Unique && index.Columns.ContainsKey(columnName) && index.Columns.Count == 1)
                 {
                     return true;
                 }

@@ -5,10 +5,18 @@
     using QuickCompareModel.DatabaseDifferences;
     using QuickCompareModel.DatabaseSchema;
 
+    /// <summary>
+    /// A class responsible for building and reporting on
+    /// the differences between two database instances.
+    /// </summary>
     public class DifferenceBuilder
     {
         private readonly QuickCompareOptions options;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="DifferenceBuilder"/> class.
+        /// </summary>
+        /// <param name="options">Option settings for the database comparison.</param>
         public DifferenceBuilder(IOptions<QuickCompareOptions> options)
         {
             if (options == null)
@@ -23,8 +31,15 @@
 
         internal SqlDatabase Database2 { get; set; }
 
+        /// <summary>
+        /// Model representing the differences between two databases.
+        /// </summary>
         public Differences Differences { get; set; }
 
+        /// <summary>
+        /// Inspect two database schemas and build the <see cref="Differences"/> model.
+        /// </summary>
+        /// <returns>The difference report generated from the model.</returns>
         public string GetDifferenceReport()
         {
             GetDatabaseSchemas();
@@ -61,29 +76,29 @@
         {
             foreach (var property1 in Database1.SqlExtendedProperties)
             {
-                if (property1.TYPE == PROPERTY_OBJECT_TYPE.DATABASE)
+                if (property1.Type == PropertyObjectType.Database)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
                     foreach (var property2 in Database2.SqlExtendedProperties)
                     {
-                        if (property2.FULL_ID == property1.FULL_ID)
+                        if (property2.FullId == property1.FullId)
                         {
                             diff.ExistsInDatabase2 = true;
-                            diff.Value1 = property1.PROPERTY_VALUE;
-                            diff.Value2 = property2.PROPERTY_VALUE;
+                            diff.Value1 = property1.PropertyValue;
+                            diff.Value2 = property2.PropertyValue;
                             break;
                         }
                     }
 
-                    Differences.ExtendedPropertyDifferences.Add(property1.PROPERTY_NAME, diff);
+                    Differences.ExtendedPropertyDifferences.Add(property1.PropertyName, diff);
                 }
             }
 
             foreach (var property2 in Database2.SqlExtendedProperties)
             {
-                if (property2.TYPE == PROPERTY_OBJECT_TYPE.DATABASE && !Differences.ExtendedPropertyDifferences.ContainsKey(property2.PROPERTY_NAME))
+                if (property2.Type == PropertyObjectType.Database && !Differences.ExtendedPropertyDifferences.ContainsKey(property2.PropertyName))
                 {
-                    Differences.ExtendedPropertyDifferences.Add(property2.PROPERTY_NAME, new ExtendedPropertyDifference(false, true));
+                    Differences.ExtendedPropertyDifferences.Add(property2.PropertyName, new ExtendedPropertyDifference(false, true));
                 }
             }
         }
@@ -158,21 +173,21 @@
                 var diff = new TableSubItemWithPropertiesDifferenceList(true, false);
                 foreach (var column2 in Database2.SqlTables[tableName].ColumnDetails)
                 {
-                    if (column2.COLUMN_NAME == column1.COLUMN_NAME)
+                    if (column2.ColumnName == column1.ColumnName)
                     {
                         InspectColumns(tableName, diff, column1, column2);
                         break;
                     }
                 }
 
-                Differences.TableDifferences[tableName].ColumnDifferences.Add(column1.COLUMN_NAME, diff);
+                Differences.TableDifferences[tableName].ColumnDifferences.Add(column1.ColumnName, diff);
             }
 
             foreach (var column2 in Database2.SqlTables[tableName].ColumnDetails)
             {
-                if (!Differences.TableDifferences[tableName].ColumnDifferences.ContainsKey(column2.COLUMN_NAME))
+                if (!Differences.TableDifferences[tableName].ColumnDifferences.ContainsKey(column2.ColumnName))
                 {
-                    Differences.TableDifferences[tableName].ColumnDifferences.Add(column2.COLUMN_NAME, new TableSubItemWithPropertiesDifferenceList(false, true));
+                    Differences.TableDifferences[tableName].ColumnDifferences.Add(column2.ColumnName, new TableSubItemWithPropertiesDifferenceList(false, true));
                 }
             }
         }
@@ -181,129 +196,129 @@
         {
             if (options.CompareOrdinalPositions)
             {
-                if (column2.ORDINAL_POSITION != column1.ORDINAL_POSITION)
+                if (column2.OrdinalPosition != column1.OrdinalPosition)
                 {
-                    diff.Differences.Add($"ordinal position is different - is [{column1.ORDINAL_POSITION}] in database 1 and is [{column2.ORDINAL_POSITION}] in database 2");
+                    diff.Differences.Add($"ordinal position is different - is [{column1.OrdinalPosition}] in database 1 and is [{column2.OrdinalPosition}] in database 2");
                 }
             }
 
-            if (column2.DATA_TYPE != column1.DATA_TYPE)
+            if (column2.DataType != column1.DataType)
             {
-                diff.Differences.Add($"data type is different - Database 1 has type of {column1.DATA_TYPE.ToUpper()} and database 2 has type of {column2.DATA_TYPE.ToUpper()}");
+                diff.Differences.Add($"data type is different - Database 1 has type of {column1.DataType.ToUpper()} and database 2 has type of {column2.DataType.ToUpper()}");
             }
 
-            if (column2.CHARACTER_MAXIMUM_LENGTH.HasValue && column1.CHARACTER_MAXIMUM_LENGTH.HasValue)
+            if (column2.CharacterMaximumLength.HasValue && column1.CharacterMaximumLength.HasValue)
             {
-                if (column2.CHARACTER_MAXIMUM_LENGTH != column1.CHARACTER_MAXIMUM_LENGTH)
+                if (column2.CharacterMaximumLength != column1.CharacterMaximumLength)
                 {
-                    diff.Differences.Add($"max length is different - Database 1 has max length of [{column1.CHARACTER_MAXIMUM_LENGTH:n0}] and database 2 has max length of [{column2.CHARACTER_MAXIMUM_LENGTH:n0}]");
+                    diff.Differences.Add($"max length is different - Database 1 has max length of [{column1.CharacterMaximumLength:n0}] and database 2 has max length of [{column2.CharacterMaximumLength:n0}]");
                 }
             }
 
-            if (column2.IS_NULLABLE != column1.IS_NULLABLE)
+            if (column2.IsNullable != column1.IsNullable)
             {
-                diff.Differences.Add($"is {(column1.IS_NULLABLE ? string.Empty : "not ")}allowed null in database 1 and is {(column2.IS_NULLABLE ? string.Empty : "not ")}allowed null in database 2");
+                diff.Differences.Add($"is {(column1.IsNullable ? string.Empty : "not ")}allowed null in database 1 and is {(column2.IsNullable ? string.Empty : "not ")}allowed null in database 2");
             }
 
-            if (column2.NUMERIC_PRECISION.HasValue && column1.NUMERIC_PRECISION.HasValue)
+            if (column2.NumericPrecision.HasValue && column1.NumericPrecision.HasValue)
             {
-                if (column2.NUMERIC_PRECISION.Value != column1.NUMERIC_PRECISION.Value)
+                if (column2.NumericPrecision.Value != column1.NumericPrecision.Value)
                 {
-                    diff.Differences.Add($"numeric precision is different - is [{column1.NUMERIC_PRECISION.Value}] in database 1 and is [{column2.NUMERIC_PRECISION.Value}] in database 2");
+                    diff.Differences.Add($"numeric precision is different - is [{column1.NumericPrecision.Value}] in database 1 and is [{column2.NumericPrecision.Value}] in database 2");
                 }
             }
 
-            if (column2.NUMERIC_PRECISION_RADIX.HasValue && column1.NUMERIC_PRECISION_RADIX.HasValue)
+            if (column2.NumericPrecisionRadix.HasValue && column1.NumericPrecisionRadix.HasValue)
             {
-                if (column2.NUMERIC_PRECISION_RADIX.Value != column1.NUMERIC_PRECISION_RADIX.Value)
+                if (column2.NumericPrecisionRadix.Value != column1.NumericPrecisionRadix.Value)
                 {
-                    diff.Differences.Add($"numeric precision radix is different - is [{column1.NUMERIC_PRECISION_RADIX.Value}] in database 1 and is [{column2.NUMERIC_PRECISION_RADIX.Value}] in database 2");
+                    diff.Differences.Add($"numeric precision radix is different - is [{column1.NumericPrecisionRadix.Value}] in database 1 and is [{column2.NumericPrecisionRadix.Value}] in database 2");
                 }
             }
 
-            if (column2.NUMERIC_SCALE.HasValue && column1.NUMERIC_SCALE.HasValue)
+            if (column2.NumericScale.HasValue && column1.NumericScale.HasValue)
             {
-                if (column2.NUMERIC_SCALE.Value != column1.NUMERIC_SCALE.Value)
+                if (column2.NumericScale.Value != column1.NumericScale.Value)
                 {
-                    diff.Differences.Add($"numeric scale is different - is [{column1.NUMERIC_SCALE.Value}] in database 1 and is [{column2.NUMERIC_SCALE.Value}] in database 2");
+                    diff.Differences.Add($"numeric scale is different - is [{column1.NumericScale.Value}] in database 1 and is [{column2.NumericScale.Value}] in database 2");
                 }
             }
 
-            if (column2.DATETIME_PRECISION.HasValue && column1.DATETIME_PRECISION.HasValue)
+            if (column2.DatetimePrecision.HasValue && column1.DatetimePrecision.HasValue)
             {
-                if (column2.DATETIME_PRECISION.Value != column1.DATETIME_PRECISION.Value)
+                if (column2.DatetimePrecision.Value != column1.DatetimePrecision.Value)
                 {
-                    diff.Differences.Add($"datetime precision is different - is [{column1.DATETIME_PRECISION.Value}] in database 1 and is [{column2.DATETIME_PRECISION.Value}] in database 2");
+                    diff.Differences.Add($"datetime precision is different - is [{column1.DatetimePrecision.Value}] in database 1 and is [{column2.DatetimePrecision.Value}] in database 2");
                 }
             }
 
-            if (column2.COLUMN_DEFAULT != column1.COLUMN_DEFAULT)
+            if (column2.ColumnDefault != column1.ColumnDefault)
             {
-                diff.Differences.Add($"default value is different - is {column1.COLUMN_DEFAULT} in database 1 and is {column2.COLUMN_DEFAULT} in database 2");
+                diff.Differences.Add($"default value is different - is {column1.ColumnDefault} in database 1 and is {column2.ColumnDefault} in database 2");
             }
 
-            if (column2.COLLATION_NAME != null && column1.COLLATION_NAME != null)
+            if (column2.CollationName != null && column1.CollationName != null)
             {
-                if (column2.COLLATION_NAME != column1.COLLATION_NAME)
+                if (column2.CollationName != column1.CollationName)
                 {
-                    diff.Differences.Add($"collation is different - is [{column1.COLLATION_NAME}] in database 1 and is [{column2.COLLATION_NAME}] in database 2");
+                    diff.Differences.Add($"collation is different - is [{column1.CollationName}] in database 1 and is [{column2.CollationName}] in database 2");
                 }
             }
 
-            if (column2.CHARACTER_SET_NAME != null && column1.CHARACTER_SET_NAME != null)
+            if (column2.CharacterSetName != null && column1.CharacterSetName != null)
             {
-                if (column2.CHARACTER_SET_NAME != column1.CHARACTER_SET_NAME)
+                if (column2.CharacterSetName != column1.CharacterSetName)
                 {
-                    diff.Differences.Add($"character set is different - is [{column1.CHARACTER_SET_NAME}] in database 1 and is [{column2.CHARACTER_SET_NAME}] in database 2");
+                    diff.Differences.Add($"character set is different - is [{column1.CharacterSetName}] in database 1 and is [{column2.CharacterSetName}] in database 2");
                 }
             }
 
-            if (Database2.SqlTables[tableName].ColumnHasUniqueIndex(column2.COLUMN_NAME) != Database1.SqlTables[tableName].ColumnHasUniqueIndex(column1.COLUMN_NAME))
+            if (Database2.SqlTables[tableName].ColumnHasUniqueIndex(column2.ColumnName) != Database1.SqlTables[tableName].ColumnHasUniqueIndex(column1.ColumnName))
             {
-                diff.Differences.Add($"{(Database1.SqlTables[tableName].ColumnHasUniqueIndex(column1.COLUMN_NAME) ? "has" : "does not have")} a unique constraint in database 1 and {(Database2.SqlTables[tableName].ColumnHasUniqueIndex(column2.COLUMN_NAME) ? "has" : "does not have")} a unique constraint in database 2");
+                diff.Differences.Add($"{(Database1.SqlTables[tableName].ColumnHasUniqueIndex(column1.ColumnName) ? "has" : "does not have")} a unique constraint in database 1 and {(Database2.SqlTables[tableName].ColumnHasUniqueIndex(column2.ColumnName) ? "has" : "does not have")} a unique constraint in database 2");
             }
 
-            if (column2.IS_FULL_TEXT_INDEXED != column1.IS_FULL_TEXT_INDEXED)
+            if (column2.IsFullTextIndexed != column1.IsFullTextIndexed)
             {
-                diff.Differences.Add($"is{(column1.IS_FULL_TEXT_INDEXED ? string.Empty : " not")} full-text indexed in database 1 and is{(column1.IS_FULL_TEXT_INDEXED ? string.Empty : " not")} full-text indexed in database 2");
+                diff.Differences.Add($"is{(column1.IsFullTextIndexed ? string.Empty : " not")} full-text indexed in database 1 and is{(column1.IsFullTextIndexed ? string.Empty : " not")} full-text indexed in database 2");
             }
 
-            if (column2.IS_COMPUTED != column1.IS_COMPUTED)
+            if (column2.IsComputed != column1.IsComputed)
             {
-                diff.Differences.Add($"is{(column1.IS_COMPUTED ? string.Empty : " not")} computed in database 1 and is{(column1.IS_COMPUTED ? string.Empty : " not")} computed in database 2");
+                diff.Differences.Add($"is{(column1.IsComputed ? string.Empty : " not")} computed in database 1 and is{(column1.IsComputed ? string.Empty : " not")} computed in database 2");
             }
 
-            if (column2.IS_IDENTITY != column1.IS_IDENTITY)
+            if (column2.IsIdentity != column1.IsIdentity)
             {
-                diff.Differences.Add($"is{(column1.IS_IDENTITY ? string.Empty : " not")} an identity column in database 1 and is{(column1.IS_IDENTITY ? string.Empty : " not")} an identity column in database 2");
+                diff.Differences.Add($"is{(column1.IsIdentity ? string.Empty : " not")} an identity column in database 1 and is{(column1.IsIdentity ? string.Empty : " not")} an identity column in database 2");
             }
 
-            if (column2.IS_IDENTITY && column1.IS_IDENTITY)
+            if (column2.IsIdentity && column1.IsIdentity)
             {
-                if (column2.IDENTITY_SEED != column1.IDENTITY_SEED)
+                if (column2.IdentitySeed != column1.IdentitySeed)
                 {
-                    diff.Differences.Add($"identity seed is different - is [{column1.IDENTITY_SEED}] in database 1 and is [{column2.IDENTITY_SEED}] in database 2");
+                    diff.Differences.Add($"identity seed is different - is [{column1.IdentitySeed}] in database 1 and is [{column2.IdentitySeed}] in database 2");
                 }
 
-                if (column2.IDENTITY_INCREMENT != column1.IDENTITY_INCREMENT)
+                if (column2.IdentityIncrement != column1.IdentityIncrement)
                 {
-                    diff.Differences.Add($"identity increment is different - is [{column1.IDENTITY_INCREMENT}] in database 1 and is [{column2.IDENTITY_INCREMENT}] in database 2");
+                    diff.Differences.Add($"identity increment is different - is [{column1.IdentityIncrement}] in database 1 and is [{column2.IdentityIncrement}] in database 2");
                 }
             }
 
-            if (column2.IS_SPARSE != column1.IS_SPARSE)
+            if (column2.IsSparse != column1.IsSparse)
             {
-                diff.Differences.Add($"is{(column1.IS_SPARSE ? string.Empty : " not")} sparse in database 1 and is{(column2.IS_SPARSE ? string.Empty : " not")} sparse in database 2");
+                diff.Differences.Add($"is{(column1.IsSparse ? string.Empty : " not")} sparse in database 1 and is{(column2.IsSparse ? string.Empty : " not")} sparse in database 2");
             }
 
-            if (column2.IS_COLUMN_SET != column1.IS_COLUMN_SET)
+            if (column2.IsColumnSet != column1.IsColumnSet)
             {
-                diff.Differences.Add($"is{(column1.IS_COLUMN_SET ? string.Empty : " not")} a column-set in database 1 and is{(column2.IS_COLUMN_SET ? string.Empty : " not")} a column-set in database 2");
+                diff.Differences.Add($"is{(column1.IsColumnSet ? string.Empty : " not")} a column-set in database 1 and is{(column2.IsColumnSet ? string.Empty : " not")} a column-set in database 2");
             }
 
             if (options.CompareProperties)
             {
-                InspectColumnProperties(tableName, column2.COLUMN_NAME, diff);
+                InspectColumnProperties(tableName, column2.ColumnName, diff);
             }
 
             diff.ExistsInDatabase2 = true;
@@ -315,21 +330,21 @@
 
             foreach (var property1 in Database1.SqlExtendedProperties)
             {
-                if (property1.TYPE == PROPERTY_OBJECT_TYPE.TABLE_COLUMN && property1.OBJECT_NAME == tableName && property1.COLUMN_NAME == columnName)
+                if (property1.Type == PropertyObjectType.TableColumn && property1.ObjectName == tableName && property1.ColumnName == columnName)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
                     foreach (var property2 in Database2.SqlExtendedProperties)
                     {
-                        if (property2.FULL_ID == property1.FULL_ID)
+                        if (property2.FullId == property1.FullId)
                         {
                             diff.ExistsInDatabase2 = true;
-                            diff.Value1 = property1.PROPERTY_VALUE;
-                            diff.Value2 = property2.PROPERTY_VALUE;
+                            diff.Value1 = property1.PropertyValue;
+                            diff.Value2 = property2.PropertyValue;
                             break;
                         }
                     }
 
-                    if (property1.PROPERTY_NAME == "MS_Description")
+                    if (property1.PropertyName == "MS_Description")
                     {
                         hasFoundColumn1Description = true;
                         if (!diff.ExistsInDatabase2)
@@ -343,25 +358,25 @@
                     }
                     else
                     {
-                        columnDiff.ExtendedPropertyDifferences.Add(property1.PROPERTY_NAME, diff);
+                        columnDiff.ExtendedPropertyDifferences.Add(property1.PropertyName, diff);
                     }
                 }
             }
 
             foreach (var property2 in Database2.SqlExtendedProperties)
             {
-                if (property2.TYPE == PROPERTY_OBJECT_TYPE.TABLE_COLUMN && property2.OBJECT_NAME == tableName && property2.COLUMN_NAME == columnName)
+                if (property2.Type == PropertyObjectType.TableColumn && property2.ObjectName == tableName && property2.ColumnName == columnName)
                 {
-                    if (property2.PROPERTY_NAME == "MS_Description")
+                    if (property2.PropertyName == "MS_Description")
                     {
                         if (!hasFoundColumn1Description)
                         {
                             columnDiff.Differences.Add("description exists in database 2 and does not exist in database 1");
                         }
                     }
-                    else if (!columnDiff.ExtendedPropertyDifferences.ContainsKey(property2.PROPERTY_NAME))
+                    else if (!columnDiff.ExtendedPropertyDifferences.ContainsKey(property2.PropertyName))
                     {
-                        columnDiff.ExtendedPropertyDifferences.Add(property2.PROPERTY_NAME, new ExtendedPropertyDifference(false, true));
+                        columnDiff.ExtendedPropertyDifferences.Add(property2.PropertyName, new ExtendedPropertyDifference(false, true));
                     }
                 }
             }
@@ -371,46 +386,46 @@
         {
             foreach (var index1 in Database1.SqlTables[tableName].Indexes)
             {
-                var diff = new TableSubItemWithPropertiesDifferenceList(true, false, index1.ITEM_TYPE);
+                var diff = new TableSubItemWithPropertiesDifferenceList(true, false, index1.ItemType);
 
                 foreach (var index2 in Database2.SqlTables[tableName].Indexes)
                 {
-                    if (index2.FULL_ID == index1.FULL_ID)
+                    if (index2.FullId == index1.FullId)
                     {
-                        if (index2.CLUSTERED != index1.CLUSTERED)
+                        if (index2.Clustered != index1.Clustered)
                         {
-                            diff.Differences.Add($"clustering is different - is{(index1.CLUSTERED ? string.Empty : " not")} clustered in database 1 and is{(index2.CLUSTERED ? string.Empty : " not")} clustered in database 2");
+                            diff.Differences.Add($"clustering is different - is{(index1.Clustered ? string.Empty : " not")} clustered in database 1 and is{(index2.Clustered ? string.Empty : " not")} clustered in database 2");
                         }
 
-                        if (index2.UNIQUE != index1.UNIQUE)
+                        if (index2.Unique != index1.Unique)
                         {
-                            diff.Differences.Add($"uniqueness is different - is{(index1.UNIQUE ? string.Empty : " not")} unique in database 1 and is{(index2.UNIQUE ? string.Empty : " not")} unique in database 2");
+                            diff.Differences.Add($"uniqueness is different - is{(index1.Unique ? string.Empty : " not")} unique in database 1 and is{(index2.Unique ? string.Empty : " not")} unique in database 2");
                         }
 
-                        if (index2.IS_UNIQUE_KEY != index1.IS_UNIQUE_KEY)
+                        if (index2.IsUniqueKey != index1.IsUniqueKey)
                         {
-                            diff.Differences.Add($"type is different - {(index1.IS_UNIQUE_KEY ? "unique key" : "index")} in database 1 and {(index2.UNIQUE ? string.Empty : " not")} in database 2");
+                            diff.Differences.Add($"type is different - {(index1.IsUniqueKey ? "unique key" : "index")} in database 1 and {(index2.Unique ? string.Empty : " not")} in database 2");
                         }
 
-                        if (index2.IS_PRIMARY_KEY != index1.IS_PRIMARY_KEY)
+                        if (index2.IsPrimaryKey != index1.IsPrimaryKey)
                         {
-                            diff.Differences.Add($"primary is different - is{(index1.IS_PRIMARY_KEY ? string.Empty : " not")} a primary key in database 1 and is{(index2.IS_PRIMARY_KEY ? string.Empty : " not")} a primary key in database 2");
+                            diff.Differences.Add($"primary is different - is{(index1.IsPrimaryKey ? string.Empty : " not")} a primary key in database 1 and is{(index2.IsPrimaryKey ? string.Empty : " not")} a primary key in database 2");
                         }
 
-                        if (index2.FILEGROUP != index1.FILEGROUP)
+                        if (index2.FileGroup != index1.FileGroup)
                         {
-                            diff.Differences.Add($"filegroup is different - [{index1.FILEGROUP}] in database 1 and [{index2.FILEGROUP}] in database 2");
+                            diff.Differences.Add($"filegroup is different - [{index1.FileGroup}] in database 1 and [{index2.FileGroup}] in database 2");
                         }
 
-                        if (index2.COLUMNS_ToString != index1.COLUMNS_ToString)
+                        if (index2.ColumnsToString != index1.ColumnsToString)
                         {
-                            foreach (var column in index1.COLUMNS.Keys)
+                            foreach (var column in index1.Columns.Keys)
                             {
-                                if (index2.COLUMNS.ContainsKey(column))
+                                if (index2.Columns.ContainsKey(column))
                                 {
-                                    if (index1.COLUMNS[column] != index2.COLUMNS[column])
+                                    if (index1.Columns[column] != index2.Columns[column])
                                     {
-                                        diff.Differences.Add($"[{column}] ordering is different - {(index1.COLUMNS[column] ? "a" : "de")}scending on database 1 and {(index2.COLUMNS[column] ? "a" : "de")}scending on database 2");
+                                        diff.Differences.Add($"[{column}] ordering is different - {(index1.Columns[column] ? "a" : "de")}scending on database 1 and {(index2.Columns[column] ? "a" : "de")}scending on database 2");
                                     }
                                 }
                                 else
@@ -419,24 +434,24 @@
                                 }
                             }
 
-                            foreach (var column in index2.COLUMNS.Keys)
+                            foreach (var column in index2.Columns.Keys)
                             {
-                                if (!index1.COLUMNS.ContainsKey(column))
+                                if (!index1.Columns.ContainsKey(column))
                                 {
                                     diff.Differences.Add($"[{column}] column does not exist in database 1 index");
                                 }
                             }
                         }
 
-                        if (index2.INCLUDED_COLUMNS_ToString != index1.INCLUDED_COLUMNS_ToString)
+                        if (index2.IncludedColumnsToString != index1.IncludedColumnsToString)
                         {
-                            foreach (var column in index1.INCLUDED_COLUMNS.Keys)
+                            foreach (var column in index1.IncludedColumns.Keys)
                             {
-                                if (index2.INCLUDED_COLUMNS.ContainsKey(column))
+                                if (index2.IncludedColumns.ContainsKey(column))
                                 {
-                                    if (index1.INCLUDED_COLUMNS[column] != index2.INCLUDED_COLUMNS[column])
+                                    if (index1.IncludedColumns[column] != index2.IncludedColumns[column])
                                     {
-                                        diff.Differences.Add($"[{column}] \"included column\" ordering is different - {(index1.INCLUDED_COLUMNS[column] ? "a" : "de")}scending on database 1 and {(index2.INCLUDED_COLUMNS[column] ? "a" : "de")}scending on database 2");
+                                        diff.Differences.Add($"[{column}] \"included column\" ordering is different - {(index1.IncludedColumns[column] ? "a" : "de")}scending on database 1 and {(index2.IncludedColumns[column] ? "a" : "de")}scending on database 2");
                                     }
                                 }
                                 else
@@ -445,9 +460,9 @@
                                 }
                             }
 
-                            foreach (var column in index2.INCLUDED_COLUMNS.Keys)
+                            foreach (var column in index2.IncludedColumns.Keys)
                             {
-                                if (!index1.INCLUDED_COLUMNS.ContainsKey(column))
+                                if (!index1.IncludedColumns.ContainsKey(column))
                                 {
                                     diff.Differences.Add($"[{column}] \"included column\" does not exist in database 1 index");
                                 }
@@ -456,7 +471,7 @@
 
                         if (options.CompareProperties)
                         {
-                            InspectIndexProperties(tableName, index2.INDEX_NAME, diff);
+                            InspectIndexProperties(tableName, index2.IndexName, diff);
                         }
 
                         diff.ExistsInDatabase2 = true;
@@ -470,31 +485,31 @@
         {
             foreach (var property1 in Database1.SqlExtendedProperties)
             {
-                if (property1.TYPE == PROPERTY_OBJECT_TYPE.INDEX && property1.TABLE_NAME == tableName && property1.INDEX_NAME == indexName)
+                if (property1.Type == PropertyObjectType.Index && property1.TableName == tableName && property1.IndexName == indexName)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
                     foreach (var property2 in Database2.SqlExtendedProperties)
                     {
-                        if (property2.FULL_ID == property1.FULL_ID)
+                        if (property2.FullId == property1.FullId)
                         {
                             diff.ExistsInDatabase2 = true;
-                            diff.Value1 = property1.PROPERTY_VALUE;
-                            diff.Value2 = property2.PROPERTY_VALUE;
+                            diff.Value1 = property1.PropertyValue;
+                            diff.Value2 = property2.PropertyValue;
                             break;
                         }
                     }
 
-                    indexDiff.ExtendedPropertyDifferences.Add(property1.PROPERTY_NAME, diff);
+                    indexDiff.ExtendedPropertyDifferences.Add(property1.PropertyName, diff);
                 }
             }
 
             foreach (var property2 in Database2.SqlExtendedProperties)
             {
-                if (property2.TYPE == PROPERTY_OBJECT_TYPE.INDEX && property2.TABLE_NAME == tableName && property2.INDEX_NAME == indexName)
+                if (property2.Type == PropertyObjectType.Index && property2.TableName == tableName && property2.IndexName == indexName)
                 {
-                    if (!indexDiff.ExtendedPropertyDifferences.ContainsKey(property2.PROPERTY_NAME))
+                    if (!indexDiff.ExtendedPropertyDifferences.ContainsKey(property2.PropertyName))
                     {
-                        indexDiff.ExtendedPropertyDifferences.Add(property2.PROPERTY_NAME, new ExtendedPropertyDifference(false, true));
+                        indexDiff.ExtendedPropertyDifferences.Add(property2.PropertyName, new ExtendedPropertyDifference(false, true));
                     }
                 }
             }
@@ -507,26 +522,26 @@
                 var diff = new TableSubItemDifferenceList(true, false);
                 foreach (var relation2 in Database2.SqlTables[tableName].Relations)
                 {
-                    if (relation2.RELATION_NAME == relation1.RELATION_NAME)
+                    if (relation2.RelationName == relation1.RelationName)
                     {
-                        if (relation2.CHILD_COLUMNS != relation1.CHILD_COLUMNS)
+                        if (relation2.ChildColumns != relation1.ChildColumns)
                         {
-                            diff.Differences.Add($"child column list is different - is \"{relation1.CHILD_COLUMNS}\" in database 1 and is \"{relation2.CHILD_COLUMNS}\" in database 2");
+                            diff.Differences.Add($"child column list is different - is \"{relation1.ChildColumns}\" in database 1 and is \"{relation2.ChildColumns}\" in database 2");
                         }
 
-                        if (relation2.PARENT_COLUMNS != relation1.PARENT_COLUMNS)
+                        if (relation2.ParentColumns != relation1.ParentColumns)
                         {
-                            diff.Differences.Add($"parent column list is different - is \"{relation1.PARENT_COLUMNS}\" in database 1 and is \"{relation2.PARENT_COLUMNS}\" in database 2");
+                            diff.Differences.Add($"parent column list is different - is \"{relation1.ParentColumns}\" in database 1 and is \"{relation2.ParentColumns}\" in database 2");
                         }
 
-                        if (relation2.DELETE_RULE != relation1.DELETE_RULE)
+                        if (relation2.DeleteRule != relation1.DeleteRule)
                         {
-                            diff.Differences.Add($"delete rule is different - is \"{relation1.DELETE_RULE}\" in database 1 and is \"{relation2.DELETE_RULE}\" in database 2");
+                            diff.Differences.Add($"delete rule is different - is \"{relation1.DeleteRule}\" in database 1 and is \"{relation2.DeleteRule}\" in database 2");
                         }
 
-                        if (relation2.UPDATE_RULE != relation1.UPDATE_RULE)
+                        if (relation2.UpdateRule != relation1.UpdateRule)
                         {
-                            diff.Differences.Add($"update rule is different - is \"{relation1.UPDATE_RULE}\" in database 1 and is \"{relation2.UPDATE_RULE}\" in database 2");
+                            diff.Differences.Add($"update rule is different - is \"{relation1.UpdateRule}\" in database 1 and is \"{relation2.UpdateRule}\" in database 2");
                         }
 
                         diff.ExistsInDatabase2 = true;
@@ -534,14 +549,14 @@
                     }
                 }
 
-                Differences.TableDifferences[tableName].RelationshipDifferences.Add(relation1.RELATION_NAME, diff);
+                Differences.TableDifferences[tableName].RelationshipDifferences.Add(relation1.RelationName, diff);
             }
 
             foreach (var relation2 in Database2.SqlTables[tableName].Relations)
             {
-                if (!Differences.TableDifferences[tableName].RelationshipDifferences.ContainsKey(relation2.RELATION_NAME))
+                if (!Differences.TableDifferences[tableName].RelationshipDifferences.ContainsKey(relation2.RelationName))
                 {
-                    Differences.TableDifferences[tableName].RelationshipDifferences.Add(relation2.RELATION_NAME, new TableSubItemDifferenceList(false, true));
+                    Differences.TableDifferences[tableName].RelationshipDifferences.Add(relation2.RelationName, new TableSubItemDifferenceList(false, true));
                 }
             }
         }
@@ -550,12 +565,12 @@
         {
             foreach (var permission1 in Database1.SqlPermissions)
             {
-                if (permission1.TYPE == PERMISSION_OBJECT_TYPE.USER_TABLE && permission1.OBJECT_NAME == tableName)
+                if (permission1.Type == PermissionObjectType.UserTable && permission1.ObjectName == tableName)
                 {
                     var diff = new BaseDifference(true, false);
                     foreach (var permission2 in Database2.SqlPermissions)
                     {
-                        if (permission2.FULL_ID == permission1.FULL_ID)
+                        if (permission2.FullId == permission1.FullId)
                         {
                             diff.ExistsInDatabase2 = true;
                             break;
@@ -571,7 +586,7 @@
 
             foreach (var permission2 in Database2.SqlPermissions)
             {
-                if (permission2.TYPE == PERMISSION_OBJECT_TYPE.USER_TABLE && permission2.OBJECT_NAME == tableName)
+                if (permission2.Type == PermissionObjectType.UserTable && permission2.ObjectName == tableName)
                 {
                     if (!Differences.TableDifferences[tableName].PermissionDifferences.ContainsKey(permission2.ToString()))
                     {
@@ -585,31 +600,31 @@
         {
             foreach (var property1 in Database1.SqlExtendedProperties)
             {
-                if (property1.TYPE == PROPERTY_OBJECT_TYPE.TABLE && property1.TABLE_NAME == tableName)
+                if (property1.Type == PropertyObjectType.Table && property1.TableName == tableName)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
                     foreach (var property2 in Database2.SqlExtendedProperties)
                     {
-                        if (property2.FULL_ID == property1.FULL_ID)
+                        if (property2.FullId == property1.FullId)
                         {
                             diff.ExistsInDatabase2 = true;
-                            diff.Value1 = property1.PROPERTY_VALUE;
-                            diff.Value2 = property2.PROPERTY_VALUE;
+                            diff.Value1 = property1.PropertyValue;
+                            diff.Value2 = property2.PropertyValue;
                             break;
                         }
                     }
 
-                    Differences.TableDifferences[tableName].ExtendedPropertyDifferences.Add(property1.PROPERTY_NAME, diff);
+                    Differences.TableDifferences[tableName].ExtendedPropertyDifferences.Add(property1.PropertyName, diff);
                 }
             }
 
             foreach (var property2 in Database2.SqlExtendedProperties)
             {
-                if (property2.TYPE == PROPERTY_OBJECT_TYPE.TABLE && property2.TABLE_NAME == tableName)
+                if (property2.Type == PropertyObjectType.Table && property2.TableName == tableName)
                 {
-                    if (!Differences.TableDifferences[tableName].ExtendedPropertyDifferences.ContainsKey(property2.PROPERTY_NAME))
+                    if (!Differences.TableDifferences[tableName].ExtendedPropertyDifferences.ContainsKey(property2.PropertyName))
                     {
-                        Differences.TableDifferences[tableName].ExtendedPropertyDifferences.Add(property2.PROPERTY_NAME, new ExtendedPropertyDifference(false, true));
+                        Differences.TableDifferences[tableName].ExtendedPropertyDifferences.Add(property2.PropertyName, new ExtendedPropertyDifference(false, true));
                     }
                 }
             }
@@ -622,39 +637,49 @@
                 var diff = new TableSubItemDifferenceList(true, false);
                 foreach (var trigger2 in Database2.SqlTables[tableName].Triggers)
                 {
-                    if (trigger2.TABLE_NAME == tableName && trigger2.TRIGGER_NAME == trigger1.TRIGGER_NAME)
+                    if (trigger2.TableName == tableName && trigger2.TriggerName == trigger1.TriggerName)
                     {
-                        if (trigger2.IS_UPDATE != trigger1.IS_UPDATE)
+                        if (trigger2.FileGroup != trigger1.FileGroup)
                         {
-                            diff.Differences.Add($"update is different - is {(trigger1.IS_UPDATE ? string.Empty : "not ")}update in database 1 and is {(trigger2.IS_UPDATE ? string.Empty : "not ")}update in database 2");
+                            diff.Differences.Add($"filegroup is different - is {trigger1.FileGroup} in database 1 and is {trigger2.FileGroup} in database 2");
                         }
 
-                        if (trigger2.IS_DELETE != trigger1.IS_DELETE)
+                        if (trigger2.TriggerOwner != trigger1.TriggerOwner)
                         {
-                            diff.Differences.Add($"delete is different - is {(trigger1.IS_DELETE ? string.Empty : "not ")}delete in database 1 and is {(trigger2.IS_DELETE ? string.Empty : "not ")}delete in database 2");
+                            diff.Differences.Add($"owner is different - is {trigger1.TriggerOwner} in database 1 and is {trigger2.TriggerOwner} in database 2");
                         }
 
-                        if (trigger2.IS_INSERT != trigger1.IS_INSERT)
+                        if (trigger2.IsUpdate != trigger1.IsUpdate)
                         {
-                            diff.Differences.Add($"insert is different - is {(trigger1.IS_INSERT ? string.Empty : "not ")}insert in database 1 and is {(trigger2.IS_INSERT ? string.Empty : "not ")}insert in database 2");
+                            diff.Differences.Add($"update is different - is {(trigger1.IsUpdate ? string.Empty : "not ")}update in database 1 and is {(trigger2.IsUpdate ? string.Empty : "not ")}update in database 2");
                         }
 
-                        if (trigger2.IS_AFTER != trigger1.IS_AFTER)
+                        if (trigger2.IsDelete != trigger1.IsDelete)
                         {
-                            diff.Differences.Add($"after is different - is {(trigger1.IS_AFTER ? string.Empty : "not ")}after in database 1 and is {(trigger2.IS_AFTER ? string.Empty : "not ")}after in database 2");
+                            diff.Differences.Add($"delete is different - is {(trigger1.IsDelete ? string.Empty : "not ")}delete in database 1 and is {(trigger2.IsDelete ? string.Empty : "not ")}delete in database 2");
                         }
 
-                        if (trigger2.IS_INSTEAD_OF != trigger1.IS_INSTEAD_OF)
+                        if (trigger2.IsInsert != trigger1.IsInsert)
                         {
-                            diff.Differences.Add($"instead-of is different - is {(trigger1.IS_INSTEAD_OF ? string.Empty : "not ")}instead-of in database 1 and is {(trigger2.IS_INSTEAD_OF ? string.Empty : "not ")}instead-of in database 2");
+                            diff.Differences.Add($"insert is different - is {(trigger1.IsInsert ? string.Empty : "not ")}insert in database 1 and is {(trigger2.IsInsert ? string.Empty : "not ")}insert in database 2");
                         }
 
-                        if (trigger2.IS_DISABLED != trigger1.IS_DISABLED)
+                        if (trigger2.IsAfter != trigger1.IsAfter)
                         {
-                            diff.Differences.Add($"disabled is different - is {(trigger1.IS_DISABLED ? string.Empty : "not ")}disabled in database 1 and is {(trigger2.IS_DISABLED ? string.Empty : "not ")}disabled in database 2");
+                            diff.Differences.Add($"after is different - is {(trigger1.IsAfter ? string.Empty : "not ")}after in database 1 and is {(trigger2.IsAfter ? string.Empty : "not ")}after in database 2");
                         }
 
-                        if (BaseDifference.CleanDefinitionText(trigger1.TRIGGER_CONTENT, true) != BaseDifference.CleanDefinitionText(trigger2.TRIGGER_CONTENT, true))
+                        if (trigger2.IsInsteadOf != trigger1.IsInsteadOf)
+                        {
+                            diff.Differences.Add($"instead-of is different - is {(trigger1.IsInsteadOf ? string.Empty : "not ")}instead-of in database 1 and is {(trigger2.IsInsteadOf ? string.Empty : "not ")}instead-of in database 2");
+                        }
+
+                        if (trigger2.IsDisabled != trigger1.IsDisabled)
+                        {
+                            diff.Differences.Add($"disabled is different - is {(trigger1.IsDisabled ? string.Empty : "not ")}disabled in database 1 and is {(trigger2.IsDisabled ? string.Empty : "not ")}disabled in database 2");
+                        }
+
+                        if (BaseDifference.CleanDefinitionText(trigger1.TriggerContent, true) != BaseDifference.CleanDefinitionText(trigger2.TriggerContent, true))
                         {
                             diff.Differences.Add("definitions are different");
                         }
@@ -664,14 +689,14 @@
                     }
                 }
 
-                Differences.TableDifferences[tableName].TriggerDifferences.Add(trigger1.TRIGGER_NAME, diff);
+                Differences.TableDifferences[tableName].TriggerDifferences.Add(trigger1.TriggerName, diff);
             }
 
             foreach (var trigger2 in Database2.SqlTables[tableName].Triggers)
             {
-                if (!Differences.TableDifferences[tableName].TriggerDifferences.ContainsKey(trigger2.TRIGGER_NAME))
+                if (!Differences.TableDifferences[tableName].TriggerDifferences.ContainsKey(trigger2.TriggerName))
                 {
-                    Differences.TableDifferences[tableName].TriggerDifferences.Add(trigger2.TRIGGER_NAME, new TableSubItemDifferenceList(false, true));
+                    Differences.TableDifferences[tableName].TriggerDifferences.Add(trigger2.TriggerName, new TableSubItemDifferenceList(false, true));
                 }
             }
         }
@@ -692,7 +717,7 @@
 
                         if (this.options.ComparePermissions)
                         {
-                            InspectObjectPermissions(synonym2, PERMISSION_OBJECT_TYPE.SYNONYM, diff);
+                            InspectObjectPermissions(synonym2, PermissionObjectType.Synonym, diff);
                         }
 
                         diff.ObjectDefinition1 = Database1.SqlSynonyms[synonym2];
@@ -731,7 +756,7 @@
 
                         if (this.options.ComparePermissions)
                         {
-                            InspectObjectPermissions(view2, PERMISSION_OBJECT_TYPE.VIEW, diff);
+                            InspectObjectPermissions(view2, PermissionObjectType.View, diff);
                         }
 
                         diff.ObjectDefinition1 = Database1.SqlSynonyms[view2];
@@ -759,7 +784,7 @@
             foreach (var routine1 in Database1.UserRoutines.Keys)
             {
                 var diff = new DatabaseObjectDifferenceList(true, false);
-                var isFunction = Database1.UserRoutines[routine1].ROUTINE_TYPE.ToLower() == "function";
+                var isFunction = Database1.UserRoutines[routine1].RoutineType.ToLower() == "function";
                 foreach (var routine2 in Database2.UserRoutines.Keys)
                 {
                     if (routine2 == routine1)
@@ -771,7 +796,7 @@
 
                         if (this.options.ComparePermissions)
                         {
-                            InspectObjectPermissions(routine2, isFunction ? PERMISSION_OBJECT_TYPE.SQL_FUNCTION : PERMISSION_OBJECT_TYPE.SQL_STORED_PROCEDURE, diff);
+                            InspectObjectPermissions(routine2, isFunction ? PermissionObjectType.SqlFunction : PermissionObjectType.SqlStoredProcedure, diff);
                         }
 
                         diff.ObjectDefinition1 = Database1.SqlSynonyms[routine2];
@@ -794,7 +819,7 @@
 
             foreach (var routine2 in Database2.UserRoutines.Keys)
             {
-                if (Database2.UserRoutines[routine2].ROUTINE_TYPE.ToLower() == "function")
+                if (Database2.UserRoutines[routine2].RoutineType.ToLower() == "function")
                 {
                     if (!Differences.FunctionDifferences.ContainsKey(routine2))
                     {
@@ -815,46 +840,46 @@
         {
             foreach (var property1 in Database1.SqlExtendedProperties)
             {
-                if (property1.TYPE == PROPERTY_OBJECT_TYPE.ROUTINE && property1.OBJECT_NAME == objectName)
+                if (property1.Type == PropertyObjectType.Routine && property1.ObjectName == objectName)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
                     foreach (var property2 in Database2.SqlExtendedProperties)
                     {
-                        if (property2.FULL_ID == property1.FULL_ID)
+                        if (property2.FullId == property1.FullId)
                         {
                             diff.ExistsInDatabase2 = true;
-                            diff.Value1 = property1.PROPERTY_VALUE;
-                            diff.Value2 = property2.PROPERTY_VALUE;
+                            diff.Value1 = property1.PropertyValue;
+                            diff.Value2 = property2.PropertyValue;
                             break;
                         }
                     }
 
-                    objectDiff.ExtendedPropertyDifferences.Add(property1.PROPERTY_NAME, diff);
+                    objectDiff.ExtendedPropertyDifferences.Add(property1.PropertyName, diff);
                 }
             }
 
             foreach (var property2 in Database2.SqlExtendedProperties)
             {
-                if (property2.TYPE == PROPERTY_OBJECT_TYPE.ROUTINE && property2.OBJECT_NAME == objectName)
+                if (property2.Type == PropertyObjectType.Routine && property2.ObjectName == objectName)
                 {
-                    if (!objectDiff.ExtendedPropertyDifferences.ContainsKey(property2.PROPERTY_NAME))
+                    if (!objectDiff.ExtendedPropertyDifferences.ContainsKey(property2.PropertyName))
                     {
-                        objectDiff.ExtendedPropertyDifferences.Add(property2.PROPERTY_NAME, new ExtendedPropertyDifference(false, true));
+                        objectDiff.ExtendedPropertyDifferences.Add(property2.PropertyName, new ExtendedPropertyDifference(false, true));
                     }
                 }
             }
         }
 
-        private void InspectObjectPermissions(string objectName, PERMISSION_OBJECT_TYPE objectType, DatabaseObjectDifferenceList objectDiff)
+        private void InspectObjectPermissions(string objectName, PermissionObjectType objectType, DatabaseObjectDifferenceList objectDiff)
         {
             foreach (var permission1 in Database1.SqlPermissions)
             {
-                if (permission1.TYPE == objectType && permission1.OBJECT_NAME == objectName)
+                if (permission1.Type == objectType && permission1.ObjectName == objectName)
                 {
                     var diff = new BaseDifference(true, false);
                     foreach (var permission2 in Database2.SqlPermissions)
                     {
-                        if (permission2.FULL_ID == permission1.FULL_ID)
+                        if (permission2.FullId == permission1.FullId)
                         {
                             diff.ExistsInDatabase2 = true;
                             break;
@@ -867,7 +892,7 @@
 
             foreach (var permission2 in Database2.SqlPermissions)
             {
-                if (permission2.TYPE == objectType && permission2.OBJECT_NAME == objectName)
+                if (permission2.Type == objectType && permission2.ObjectName == objectName)
                 {
                     if (!objectDiff.PermissionDifferences.ContainsKey(permission2.ToString()))
                     {
@@ -879,14 +904,19 @@
 
         private void GetDatabaseSchemas()
         {
-            if (options.ConnectionString1.ToLower() == options.ConnectionString2.ToLower())
+            if (string.IsNullOrEmpty(options.ConnectionString1) || string.IsNullOrEmpty(options.ConnectionString2))
             {
-                throw new InvalidOperationException("Connection strings should be different");
+                throw new InvalidOperationException("Connection strings must be set");
             }
 
-            Database1 = new SqlDatabase(options.ConnectionString1, options.CompareObjects, options.CompareIndexes, options.ComparePermissions, options.CompareProperties, options.CompareTriggers, options.CompareSynonyms);
+            if (options.ConnectionString1.ToLower() == options.ConnectionString2.ToLower())
+            {
+                throw new InvalidOperationException("Connection strings must be different");
+            }
 
-            Database2 = new SqlDatabase(options.ConnectionString2, options.CompareObjects, options.CompareIndexes, options.ComparePermissions, options.CompareProperties, options.CompareTriggers, options.CompareSynonyms);
+            Database1 = new SqlDatabase(options.ConnectionString1, options);
+
+            Database2 = new SqlDatabase(options.ConnectionString2, options);
         }
     }
 }

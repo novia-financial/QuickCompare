@@ -2,8 +2,8 @@
 {
     internal class SqlUserRoutine
     {
-        public string ROUTINE_TYPE { get; set; }
+        public string RoutineType { get; set; }
 
-        public string ROUTINE_DEFINITION { get; set; }
+        public string RoutineDefinition { get; set; }
     }
 }
