@@ -2,6 +2,9 @@
 {
     using System.Text.RegularExpressions;
 
+    /// <summary>
+    /// Model to represent the most basic element and track the existence in both databases.
+    /// </summary>
     public class BaseDifference
     {
         public const string TabIndent = "     ";
@@ -20,6 +23,12 @@
 
         public override string ToString() => ExistsInBothDatabases ? string.Empty : $"does not exist in database {(ExistsInDatabase1 ? 2 : 1)}";
 
+        /// <summary>
+        /// A helper method to trim whitespace and comments from text for comparison purposes.
+        /// </summary>
+        /// <param name="definition">Text to modify.</param>
+        /// <param name="stripWhiteSpace">Reduces all whitespace to a single character.</param>
+        /// <returns>Modified text ready for comparison.</returns>
         public static string CleanDefinitionText(string definition, bool stripWhiteSpace)
         {
             if (string.IsNullOrEmpty(definition))
