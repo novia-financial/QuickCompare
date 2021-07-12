@@ -26,9 +26,9 @@
         {
             get
             {
-                foreach (var prop in ExtendedPropertyDifferences.Values)
+                foreach (var permission in PermissionDifferences.Values)
                 {
-                    if (prop.IsDifferent)
+                    if (!permission.ExistsInBothDatabases)
                     {
                         return true;
                     }
