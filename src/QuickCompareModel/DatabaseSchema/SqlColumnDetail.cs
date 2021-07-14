@@ -1,6 +1,6 @@
 ﻿namespace QuickCompareModel.DatabaseSchema
 {
-    internal class SqlColumnDetail
+    public class SqlColumnDetail
     {
         public string TableSchema { get; set; }
 

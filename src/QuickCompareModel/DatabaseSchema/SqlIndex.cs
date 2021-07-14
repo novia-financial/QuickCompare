@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    internal class SqlIndex
+    public class SqlIndex
     {
         public bool IsPrimaryKey { get; set; }
 

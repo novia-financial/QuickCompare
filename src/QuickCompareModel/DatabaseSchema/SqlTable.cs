@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    internal class SqlTable
+    public class SqlTable
     {
         public List<SqlColumnDetail> ColumnDetails { get; set; } = new List<SqlColumnDetail>();
 

@@ -1,6 +1,6 @@
 ﻿namespace QuickCompareModel.DatabaseSchema
 {
-    internal class SqlTrigger
+    public class SqlTrigger
     {
         public string FileGroup { get; set; }
 

@@ -35,7 +35,7 @@
         /// <param name="definition">Text to modify.</param>
         /// <param name="stripWhiteSpace">Value indicating where to reduce all whitespace to a single character.</param>
         /// <returns>Modified text ready for comparison.</returns>
-        protected static string CleanDefinitionText(string definition, bool stripWhiteSpace)
+        public static string CleanDefinitionText(string definition, bool stripWhiteSpace)
         {
             if (string.IsNullOrWhiteSpace(definition))
             {

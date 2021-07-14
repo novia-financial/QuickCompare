@@ -1,6 +1,6 @@
 ﻿namespace QuickCompareModel.DatabaseSchema
 {
-    internal class SqlExtendedProperty
+    public class SqlExtendedProperty
     {
         public string PropertyType { get; set; }
 
@@ -31,7 +31,7 @@
                     : PropertyObjectType.Index;
     }
 
-    internal enum PropertyObjectType
+    public enum PropertyObjectType
     {
         Database,
         Routine,

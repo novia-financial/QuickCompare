@@ -99,9 +99,11 @@
 
             OnStatusChanged("Inspecting schema for database 1");
             Database1 = new SqlDatabase(options.ConnectionString1, options);
+            Database1.PopulateSchemaModel();
 
             OnStatusChanged("Inspecting schema for database 2");
             Database2 = new SqlDatabase(options.ConnectionString2, options);
+            Database2.PopulateSchemaModel();
         }
 
         private void InspectDatabaseExtendedProperties()

@@ -1,6 +1,6 @@
 ﻿namespace QuickCompareModel.DatabaseSchema
 {
-    internal class SqlPermission
+    public class SqlPermission
     {
         public string RoleName { get; set; }
 
@@ -35,7 +35,7 @@
                 : $"[{PermissionType}] {(PermissionState == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(RoleName) ? "user" : "role")}: [{(string.IsNullOrEmpty(RoleName) ? UserName : RoleName)}]";
     }
 
-    internal enum PermissionObjectType
+    public enum PermissionObjectType
     {
         Database,
         SqlStoredProcedure,

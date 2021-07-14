@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
+    using System.Diagnostics;
     using System.IO;
     using System.Reflection;
     using System.Text.RegularExpressions;
@@ -11,7 +12,7 @@
     /// <summary>
     /// Class for running database queries and building lists that detail the content of the database schema.
     /// </summary>
-    internal class SqlDatabase
+    public class SqlDatabase
     {
         private readonly string connectionString;
         private readonly QuickCompareOptions options;
@@ -25,8 +26,6 @@
         {
             this.connectionString = connectionString;
             this.options = options;
-
-            PopulateSchemaModel();
         }
 
         /// <summary>
@@ -69,7 +68,10 @@
         /// <summary> Gets or sets a list of <see cref="SqlExtendedProperty"/> instances for the database itself. </summary>
         public List<SqlExtendedProperty> ExtendedProperties { get; set; } = new List<SqlExtendedProperty>();
 
-        private void PopulateSchemaModel()
+        /// <summary>
+        /// Populate the models based on the supplied connection string.
+        /// </summary>
+        public void PopulateSchemaModel()
         {
             using var connection = new SqlConnection(this.connectionString);
             LoadTableNames(connection);
@@ -123,13 +125,16 @@
             }
         }
 
-        #region Load methods
-
-        private string LoadQueryFromResource(string queryName)
+        /// <summary>
+        /// Helper method to return embedded SQL resource by filename.
+        /// </summary>
+        /// <param name="queryName">Name of the SQL file without the extension.</param>
+        /// <returns>SQL query text.</returns>
+        public string LoadQueryFromResource(string queryName)
         {
             var sqlQuery = string.Empty;
 
-            var resourceName = $"QuickCompareModel.{queryName}.sql";
+            var resourceName = $"{nameof(QuickCompareModel)}.{nameof(DatabaseSchema)}.Queries.{queryName}.sql";
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
             {
                 if (stream != null)
@@ -141,9 +146,11 @@
             return sqlQuery;
         }
 
+        #region Load methods
+
         private void LoadTableNames(SqlConnection connection)
         {
-            using var command = new SqlCommand(LoadQueryFromResource("TableNames.sql"), connection);
+            using var command = new SqlCommand(LoadQueryFromResource("TableNames"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())

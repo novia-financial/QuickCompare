@@ -1,6 +1,6 @@
 ﻿namespace QuickCompareModel.DatabaseSchema
 {
-    internal class SqlUserRoutine
+    public class SqlUserRoutine
     {
         public string RoutineType { get; set; }
 

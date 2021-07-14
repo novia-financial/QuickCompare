@@ -1,6 +1,6 @@
 ﻿namespace QuickCompareModel.DatabaseSchema
 {
-    internal class SqlRelation
+    public class SqlRelation
     {
         public string RelationName { get; set; }
 
