@@ -6,8 +6,7 @@
     using QuickCompareModel.DatabaseSchema;
 
     /// <summary>
-    /// A class responsible for building and reporting on
-    /// the differences between two database instances.
+    /// Class responsible for building a set of differences between two database instances.
     /// </summary>
     public class DifferenceBuilder
     {
@@ -27,6 +26,19 @@
             this.options = options.Value;
         }
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="DifferenceBuilder"/> class with ready <see cref="SqlDatabase"/> instances.
+        /// </summary>
+        /// <param name="options">Option settings for the database comparison.</param>
+        /// <param name="database1">Instance of <see cref="SqlDatabase"/> representing the first database to compare.</param>
+        /// <param name="database2">Instance of <see cref="SqlDatabase"/> representing the second database to compare.</param>
+        public DifferenceBuilder(IOptions<QuickCompareOptions> options, SqlDatabase database1, SqlDatabase database2)
+            : this(options)
+        {
+            this.Database1 = database1;
+            this.Database2 = database2;
+        }
+
         internal SqlDatabase Database1 { get; set; }
 
         internal SqlDatabase Database2 { get; set; }
@@ -44,10 +56,12 @@
         /// <summary>
         /// Inspect two database schemas and build the <see cref="Differences"/> model.
         /// </summary>
-        /// <returns>The difference report generated from the model.</returns>
-        public string GetDifferenceReport()
+        public void BuildDifferences()
         {
-            GetDatabaseSchemas();
+            if (Database1 == null)
+            {
+                LoadDatabaseSchemas();
+            }
 
             Differences = new Differences
             {
@@ -75,8 +89,6 @@
                 InspectViews();
                 InspectRoutines();
             }
-
-            return Differences.ToString();
         }
 
         protected virtual void OnStatusChanged(string message)
@@ -85,7 +97,7 @@
             handler?.Invoke(this, new StatusChangedEventArgs(message));
         }
 
-        private void GetDatabaseSchemas()
+        private void LoadDatabaseSchemas()
         {
             if (string.IsNullOrEmpty(options.ConnectionString1) || string.IsNullOrEmpty(options.ConnectionString2))
             {

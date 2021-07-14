@@ -27,7 +27,8 @@ var settings = new QuickCompareOptions
 IOptions<QuickCompareOptions> options = Options.Create(settings);
 
 var builder = new DifferenceBuilder(options);
-string outputText = builder.GetDifferenceReport();
+builder.BuildDifferences();
+string outputText = builder.Differences.ToString();
 ```
 
 _The options are usually injected from the configuration, but are explicitly created in this example for clarity._
@@ -37,3 +38,8 @@ _The options are usually injected from the configuration, but are explicitly cre
 Inspecting two databases for differences is quick, but it is far from instantaneous. You can measure progress by handling status changes.
 
 The `DifferenceBuilder` class raises an event when the status changes - subscribe to `ComparisonStatusChanged` to return an instance of `StatusChangedEventArgs`. This EventArgs instance has a property named `StatusMessage` which could be presented in a UI layer or used to measure timing of steps.
+
+### Database SQL queries
+
+The SQL queries are located in the folder DatabaseSchema/Queries.
+
