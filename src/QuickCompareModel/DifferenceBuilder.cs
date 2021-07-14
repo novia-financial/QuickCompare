@@ -522,6 +522,16 @@
                         break;
                     }
                 }
+
+                Differences.TableDifferences[tableName].IndexDifferences.Add(index1.IndexName, diff);
+            }
+
+            foreach (var index2 in Database2.Tables[tableName].Indexes)
+            {
+                if (!Differences.TableDifferences[tableName].IndexDifferences.ContainsKey(index2.IndexName))
+                {
+                    Differences.TableDifferences[tableName].IndexDifferences.Add(index2.IndexName, new TableSubItemWithPropertiesDifferenceList(false, true));
+                }
             }
         }
 
