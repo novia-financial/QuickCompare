@@ -6,58 +6,79 @@
     using System.Text.RegularExpressions;
     using QuickCompareModel.DatabaseSchema;
 
+    /// <summary>
+    /// Class for running database queries and building lists that detail the content of the database schema.
+    /// </summary>
     internal class SqlDatabase
     {
+        private readonly string connectionString;
         private readonly QuickCompareOptions options;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SqlDatabase"/> class with a connection string and setting options.
+        /// </summary>
+        /// <param name="connectionString">The database connection string for the current instance being inspected.</param>
+        /// <param name="options">Collection of configuration settings.</param>
         public SqlDatabase(string connectionString, QuickCompareOptions options)
         {
-            ConnectionStr = connectionString;
+            this.connectionString = connectionString;
             this.options = options;
 
             PopulateSchemaModel();
         }
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SqlDatabase"/> class with a connection string.
+        /// </summary>
+        /// <param name="connectionString">The database connection string for the current instance being inspected.</param>
         public SqlDatabase(string connectionString)
             : this(connectionString, new QuickCompareOptions())
         {
         }
 
-        public string ConnectionStr { get; set; }
-
+        /// <summary>
+        /// Friendly name for the database instance, including both server name and database name.
+        /// </summary>
         public string FriendlyName
         {
             get
             {
-                var builder = new SqlConnectionStringBuilder(ConnectionStr);
+                var builder = new SqlConnectionStringBuilder(this.connectionString);
                 return $"[{builder.DataSource}].[{builder.InitialCatalog}]";
             }
         }
 
-        public Dictionary<string, SqlTable> SqlTables { get; set; } = new Dictionary<string, SqlTable>();
+        /// <summary> Gets or sets a list of <see cref="SqlTable"/> instances, indexed by table name. </summary>
+        public Dictionary<string, SqlTable> Tables { get; set; } = new Dictionary<string, SqlTable>();
 
+        /// <summary> Gets or sets a list of database views, indexed by view name. </summary>
         public Dictionary<string, string> Views { get; set; } = new Dictionary<string, string>();
 
-        public Dictionary<string, string> SqlSynonyms { get; set; } = new Dictionary<string, string>();
+        /// <summary> Gets or sets a list of SQL synonyms, indexed by synonym name. </summary>
+        public Dictionary<string, string> Synonyms { get; set; } = new Dictionary<string, string>();
 
+        /// <summary> Gets or sets a list of <see cref="SqlUserRoutine"/> instances, indexed by routine name. </summary>
+        /// <remarks> User routines include views, functions and stored procedures. </remarks>
         public Dictionary<string, SqlUserRoutine> UserRoutines { get; set; } = new Dictionary<string, SqlUserRoutine>();
 
-        public List<SqlPermission> SqlPermissions { get; set; } = new List<SqlPermission>();
+        /// <summary> Gets or sets a list of <see cref="SqlPermission"/> instances, for both roles and users. </summary>
+        public List<SqlPermission> Permissions { get; set; } = new List<SqlPermission>();
 
-        public List<SqlExtendedProperty> SqlExtendedProperties { get; set; } = new List<SqlExtendedProperty>();
+        /// <summary> Gets or sets a list of <see cref="SqlExtendedProperty"/> instances for the database itself. </summary>
+        public List<SqlExtendedProperty> ExtendedProperties { get; set; } = new List<SqlExtendedProperty>();
 
         private void PopulateSchemaModel()
         {
-            using var connection = new SqlConnection(ConnectionStr);
+            using var connection = new SqlConnection(this.connectionString);
             LoadTableNames(connection);
 
             if (options.CompareIndexes)
             {
-                foreach (var table in SqlTables.Keys)
+                foreach (var table in Tables.Keys)
                 {
                     LoadIndexes(connection, table);
 
-                    foreach (var index in SqlTables[table].Indexes)
+                    foreach (var index in Tables[table].Indexes)
                     {
                         LoadIncludedColumnsForIndex(connection, index);
                     }
@@ -109,7 +130,7 @@
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
             {
-                SqlTables.Add(dr.GetString(0), new SqlTable());
+                Tables.Add(dr.GetString(0), new SqlTable());
             }
         }
 
@@ -123,7 +144,7 @@
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
             {
-                SqlTables[table].Indexes.Add(LoadIndex(dr));
+                Tables[table].Indexes.Add(LoadIndex(dr));
             }
         }
 
@@ -153,9 +174,9 @@
             {
                 var relation = LoadRelation(dr);
 
-                if (SqlTables.ContainsKey(relation.ChildTable))
+                if (Tables.ContainsKey(relation.ChildTable))
                 {
-                    SqlTables[relation.ChildTable].Relations.Add(relation);
+                    Tables[relation.ChildTable].Relations.Add(relation);
                 }
             }
         }
@@ -169,9 +190,9 @@
             {
                 var detail = LoadColumnDetail(dr);
 
-                if (SqlTables.ContainsKey(detail.TableName))
+                if (Tables.ContainsKey(detail.TableName))
                 {
-                    SqlTables[detail.TableName].ColumnDetails.Add(detail);
+                    Tables[detail.TableName].ColumnDetails.Add(detail);
                 }
             }
         }
@@ -183,7 +204,7 @@
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
             {
-                SqlPermissions.Add(LoadPermission(dr));
+                Permissions.Add(LoadPermission(dr));
             }
         }
 
@@ -194,7 +215,7 @@
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
             {
-                SqlPermissions.Add(LoadPermission(dr));
+                Permissions.Add(LoadPermission(dr));
             }
         }
 
@@ -205,7 +226,7 @@
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
             {
-                SqlExtendedProperties.Add(LoadExtendedProperty(dr));
+                ExtendedProperties.Add(LoadExtendedProperty(dr));
             }
         }
 
@@ -218,9 +239,9 @@
             {
                 var trigger = LoadTrigger(dr);
 
-                if (SqlTables.ContainsKey(trigger.TableName))
+                if (Tables.ContainsKey(trigger.TableName))
                 {
-                    SqlTables[trigger.TableName].Triggers.Add(trigger);
+                    Tables[trigger.TableName].Triggers.Add(trigger);
                 }
             }
         }
@@ -250,7 +271,7 @@
                     i++;
                 }
 
-                SqlSynonyms.Add(name, def);
+                Synonyms.Add(name, def);
             }
         }
 

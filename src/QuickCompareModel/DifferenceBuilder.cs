@@ -32,6 +32,11 @@
         internal SqlDatabase Database2 { get; set; }
 
         /// <summary>
+        /// Handler for when the status message changes.
+        /// </summary>
+        public event EventHandler<StatusChangedEventArgs> ComparisonStatusChanged;
+
+        /// <summary>
         /// Model representing the differences between two databases.
         /// </summary>
         public Differences Differences { get; set; }
@@ -49,6 +54,8 @@
                 Database1 = this.Database1.FriendlyName,
                 Database2 = this.Database2.FriendlyName,
             };
+
+            OnStatusChanged("Inspecting differences");
 
             if (options.CompareProperties)
             {
@@ -72,14 +79,39 @@
             return Differences.ToString();
         }
 
+        protected virtual void OnStatusChanged(string message)
+        {
+            var handler = this.ComparisonStatusChanged;
+            handler?.Invoke(this, new StatusChangedEventArgs(message));
+        }
+
+        private void GetDatabaseSchemas()
+        {
+            if (string.IsNullOrEmpty(options.ConnectionString1) || string.IsNullOrEmpty(options.ConnectionString2))
+            {
+                throw new InvalidOperationException("Connection strings must be set");
+            }
+
+            if (options.ConnectionString1.ToLower() == options.ConnectionString2.ToLower())
+            {
+                throw new InvalidOperationException("Connection strings must be different");
+            }
+
+            OnStatusChanged("Inspecting schema for database 1");
+            Database1 = new SqlDatabase(options.ConnectionString1, options);
+
+            OnStatusChanged("Inspecting schema for database 2");
+            Database2 = new SqlDatabase(options.ConnectionString2, options);
+        }
+
         private void InspectDatabaseExtendedProperties()
         {
-            foreach (var property1 in Database1.SqlExtendedProperties)
+            foreach (var property1 in Database1.ExtendedProperties)
             {
                 if (property1.Type == PropertyObjectType.Database)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
-                    foreach (var property2 in Database2.SqlExtendedProperties)
+                    foreach (var property2 in Database2.ExtendedProperties)
                     {
                         if (property2.FullId == property1.FullId)
                         {
@@ -94,7 +126,7 @@
                 }
             }
 
-            foreach (var property2 in Database2.SqlExtendedProperties)
+            foreach (var property2 in Database2.ExtendedProperties)
             {
                 if (property2.Type == PropertyObjectType.Database && !Differences.ExtendedPropertyDifferences.ContainsKey(property2.PropertyName))
                 {
@@ -105,10 +137,10 @@
 
         private void InspectTables()
         {
-            foreach (var table1 in Database1.SqlTables.Keys)
+            foreach (var table1 in Database1.Tables.Keys)
             {
                 var diff = new TableDifferenceList(true, false);
-                foreach (var table2 in Database2.SqlTables.Keys)
+                foreach (var table2 in Database2.Tables.Keys)
                 {
                     if (table2 == table1)
                     {
@@ -117,7 +149,7 @@
                     }
                 }
 
-                foreach (var table2 in Database2.SqlTables.Keys)
+                foreach (var table2 in Database2.Tables.Keys)
                 {
                     if (!Differences.TableDifferences.ContainsKey(table2))
                     {
@@ -168,10 +200,10 @@
 
         private void InspectTableColumns(string tableName)
         {
-            foreach (var column1 in Database1.SqlTables[tableName].ColumnDetails)
+            foreach (var column1 in Database1.Tables[tableName].ColumnDetails)
             {
                 var diff = new TableSubItemWithPropertiesDifferenceList(true, false);
-                foreach (var column2 in Database2.SqlTables[tableName].ColumnDetails)
+                foreach (var column2 in Database2.Tables[tableName].ColumnDetails)
                 {
                     if (column2.ColumnName == column1.ColumnName)
                     {
@@ -183,7 +215,7 @@
                 Differences.TableDifferences[tableName].ColumnDifferences.Add(column1.ColumnName, diff);
             }
 
-            foreach (var column2 in Database2.SqlTables[tableName].ColumnDetails)
+            foreach (var column2 in Database2.Tables[tableName].ColumnDetails)
             {
                 if (!Differences.TableDifferences[tableName].ColumnDifferences.ContainsKey(column2.ColumnName))
                 {
@@ -273,9 +305,9 @@
                 }
             }
 
-            if (Database2.SqlTables[tableName].ColumnHasUniqueIndex(column2.ColumnName) != Database1.SqlTables[tableName].ColumnHasUniqueIndex(column1.ColumnName))
+            if (Database2.Tables[tableName].ColumnHasUniqueIndex(column2.ColumnName) != Database1.Tables[tableName].ColumnHasUniqueIndex(column1.ColumnName))
             {
-                diff.Differences.Add($"{(Database1.SqlTables[tableName].ColumnHasUniqueIndex(column1.ColumnName) ? "has" : "does not have")} a unique constraint in database 1 and {(Database2.SqlTables[tableName].ColumnHasUniqueIndex(column2.ColumnName) ? "has" : "does not have")} a unique constraint in database 2");
+                diff.Differences.Add($"{(Database1.Tables[tableName].ColumnHasUniqueIndex(column1.ColumnName) ? "has" : "does not have")} a unique constraint in database 1 and {(Database2.Tables[tableName].ColumnHasUniqueIndex(column2.ColumnName) ? "has" : "does not have")} a unique constraint in database 2");
             }
 
             if (column2.IsFullTextIndexed != column1.IsFullTextIndexed)
@@ -328,12 +360,12 @@
         {
             var hasFoundColumn1Description = false;
 
-            foreach (var property1 in Database1.SqlExtendedProperties)
+            foreach (var property1 in Database1.ExtendedProperties)
             {
                 if (property1.Type == PropertyObjectType.TableColumn && property1.ObjectName == tableName && property1.ColumnName == columnName)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
-                    foreach (var property2 in Database2.SqlExtendedProperties)
+                    foreach (var property2 in Database2.ExtendedProperties)
                     {
                         if (property2.FullId == property1.FullId)
                         {
@@ -363,7 +395,7 @@
                 }
             }
 
-            foreach (var property2 in Database2.SqlExtendedProperties)
+            foreach (var property2 in Database2.ExtendedProperties)
             {
                 if (property2.Type == PropertyObjectType.TableColumn && property2.ObjectName == tableName && property2.ColumnName == columnName)
                 {
@@ -384,11 +416,11 @@
 
         private void InspectIndexes(string tableName)
         {
-            foreach (var index1 in Database1.SqlTables[tableName].Indexes)
+            foreach (var index1 in Database1.Tables[tableName].Indexes)
             {
                 var diff = new TableSubItemWithPropertiesDifferenceList(true, false, index1.ItemType);
 
-                foreach (var index2 in Database2.SqlTables[tableName].Indexes)
+                foreach (var index2 in Database2.Tables[tableName].Indexes)
                 {
                     if (index2.FullId == index1.FullId)
                     {
@@ -483,12 +515,12 @@
 
         private void InspectIndexProperties(string tableName, string indexName, TableSubItemWithPropertiesDifferenceList indexDiff)
         {
-            foreach (var property1 in Database1.SqlExtendedProperties)
+            foreach (var property1 in Database1.ExtendedProperties)
             {
                 if (property1.Type == PropertyObjectType.Index && property1.TableName == tableName && property1.IndexName == indexName)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
-                    foreach (var property2 in Database2.SqlExtendedProperties)
+                    foreach (var property2 in Database2.ExtendedProperties)
                     {
                         if (property2.FullId == property1.FullId)
                         {
@@ -503,7 +535,7 @@
                 }
             }
 
-            foreach (var property2 in Database2.SqlExtendedProperties)
+            foreach (var property2 in Database2.ExtendedProperties)
             {
                 if (property2.Type == PropertyObjectType.Index && property2.TableName == tableName && property2.IndexName == indexName)
                 {
@@ -517,10 +549,10 @@
 
         private void InspectRelations(string tableName)
         {
-            foreach (var relation1 in Database1.SqlTables[tableName].Relations)
+            foreach (var relation1 in Database1.Tables[tableName].Relations)
             {
                 var diff = new TableSubItemDifferenceList(true, false);
-                foreach (var relation2 in Database2.SqlTables[tableName].Relations)
+                foreach (var relation2 in Database2.Tables[tableName].Relations)
                 {
                     if (relation2.RelationName == relation1.RelationName)
                     {
@@ -552,7 +584,7 @@
                 Differences.TableDifferences[tableName].RelationshipDifferences.Add(relation1.RelationName, diff);
             }
 
-            foreach (var relation2 in Database2.SqlTables[tableName].Relations)
+            foreach (var relation2 in Database2.Tables[tableName].Relations)
             {
                 if (!Differences.TableDifferences[tableName].RelationshipDifferences.ContainsKey(relation2.RelationName))
                 {
@@ -563,12 +595,12 @@
 
         private void InspectPermissions(string tableName)
         {
-            foreach (var permission1 in Database1.SqlPermissions)
+            foreach (var permission1 in Database1.Permissions)
             {
                 if (permission1.Type == PermissionObjectType.UserTable && permission1.ObjectName == tableName)
                 {
                     var diff = new BaseDifference(true, false);
-                    foreach (var permission2 in Database2.SqlPermissions)
+                    foreach (var permission2 in Database2.Permissions)
                     {
                         if (permission2.FullId == permission1.FullId)
                         {
@@ -584,7 +616,7 @@
                 }
             }
 
-            foreach (var permission2 in Database2.SqlPermissions)
+            foreach (var permission2 in Database2.Permissions)
             {
                 if (permission2.Type == PermissionObjectType.UserTable && permission2.ObjectName == tableName)
                 {
@@ -598,12 +630,12 @@
 
         private void InspectTableProperties(string tableName)
         {
-            foreach (var property1 in Database1.SqlExtendedProperties)
+            foreach (var property1 in Database1.ExtendedProperties)
             {
                 if (property1.Type == PropertyObjectType.Table && property1.TableName == tableName)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
-                    foreach (var property2 in Database2.SqlExtendedProperties)
+                    foreach (var property2 in Database2.ExtendedProperties)
                     {
                         if (property2.FullId == property1.FullId)
                         {
@@ -618,7 +650,7 @@
                 }
             }
 
-            foreach (var property2 in Database2.SqlExtendedProperties)
+            foreach (var property2 in Database2.ExtendedProperties)
             {
                 if (property2.Type == PropertyObjectType.Table && property2.TableName == tableName)
                 {
@@ -632,10 +664,10 @@
 
         private void InspectTriggers(string tableName)
         {
-            foreach (var trigger1 in Database1.SqlTables[tableName].Triggers)
+            foreach (var trigger1 in Database1.Tables[tableName].Triggers)
             {
                 var diff = new TableSubItemDifferenceList(true, false);
-                foreach (var trigger2 in Database2.SqlTables[tableName].Triggers)
+                foreach (var trigger2 in Database2.Tables[tableName].Triggers)
                 {
                     if (trigger2.TableName == tableName && trigger2.TriggerName == trigger1.TriggerName)
                     {
@@ -692,7 +724,7 @@
                 Differences.TableDifferences[tableName].TriggerDifferences.Add(trigger1.TriggerName, diff);
             }
 
-            foreach (var trigger2 in Database2.SqlTables[tableName].Triggers)
+            foreach (var trigger2 in Database2.Tables[tableName].Triggers)
             {
                 if (!Differences.TableDifferences[tableName].TriggerDifferences.ContainsKey(trigger2.TriggerName))
                 {
@@ -703,10 +735,10 @@
 
         private void InspectSynonyms()
         {
-            foreach (var synonym1 in Database1.SqlSynonyms.Keys)
+            foreach (var synonym1 in Database1.Synonyms.Keys)
             {
                 var diff = new DatabaseObjectDifferenceList(true, false);
-                foreach (var synonym2 in Database2.SqlSynonyms.Keys)
+                foreach (var synonym2 in Database2.Synonyms.Keys)
                 {
                     if (synonym2 == synonym1)
                     {
@@ -720,8 +752,8 @@
                             InspectObjectPermissions(synonym2, PermissionObjectType.Synonym, diff);
                         }
 
-                        diff.ObjectDefinition1 = Database1.SqlSynonyms[synonym2];
-                        diff.ObjectDefinition2 = Database2.SqlSynonyms[synonym2];
+                        diff.ObjectDefinition1 = Database1.Synonyms[synonym2];
+                        diff.ObjectDefinition2 = Database2.Synonyms[synonym2];
 
                         diff.ExistsInDatabase2 = true;
                         break;
@@ -731,7 +763,7 @@
                 Differences.SynonymDifferences.Add(synonym1, diff);
             }
 
-            foreach (var synonym2 in Database2.SqlSynonyms.Keys)
+            foreach (var synonym2 in Database2.Synonyms.Keys)
             {
                 if (!Differences.SynonymDifferences.ContainsKey(synonym2))
                 {
@@ -759,8 +791,8 @@
                             InspectObjectPermissions(view2, PermissionObjectType.View, diff);
                         }
 
-                        diff.ObjectDefinition1 = Database1.SqlSynonyms[view2];
-                        diff.ObjectDefinition2 = Database2.SqlSynonyms[view2];
+                        diff.ObjectDefinition1 = Database1.Synonyms[view2];
+                        diff.ObjectDefinition2 = Database2.Synonyms[view2];
 
                         diff.ExistsInDatabase2 = true;
                         break;
@@ -799,8 +831,8 @@
                             InspectObjectPermissions(routine2, isFunction ? PermissionObjectType.SqlFunction : PermissionObjectType.SqlStoredProcedure, diff);
                         }
 
-                        diff.ObjectDefinition1 = Database1.SqlSynonyms[routine2];
-                        diff.ObjectDefinition2 = Database2.SqlSynonyms[routine2];
+                        diff.ObjectDefinition1 = Database1.Synonyms[routine2];
+                        diff.ObjectDefinition2 = Database2.Synonyms[routine2];
 
                         diff.ExistsInDatabase2 = true;
                         break;
@@ -838,12 +870,12 @@
 
         private void InspectObjectProperties(string objectName, DatabaseObjectDifferenceList objectDiff)
         {
-            foreach (var property1 in Database1.SqlExtendedProperties)
+            foreach (var property1 in Database1.ExtendedProperties)
             {
                 if (property1.Type == PropertyObjectType.Routine && property1.ObjectName == objectName)
                 {
                     var diff = new ExtendedPropertyDifference(true, false);
-                    foreach (var property2 in Database2.SqlExtendedProperties)
+                    foreach (var property2 in Database2.ExtendedProperties)
                     {
                         if (property2.FullId == property1.FullId)
                         {
@@ -858,7 +890,7 @@
                 }
             }
 
-            foreach (var property2 in Database2.SqlExtendedProperties)
+            foreach (var property2 in Database2.ExtendedProperties)
             {
                 if (property2.Type == PropertyObjectType.Routine && property2.ObjectName == objectName)
                 {
@@ -872,12 +904,12 @@
 
         private void InspectObjectPermissions(string objectName, PermissionObjectType objectType, DatabaseObjectDifferenceList objectDiff)
         {
-            foreach (var permission1 in Database1.SqlPermissions)
+            foreach (var permission1 in Database1.Permissions)
             {
                 if (permission1.Type == objectType && permission1.ObjectName == objectName)
                 {
                     var diff = new BaseDifference(true, false);
-                    foreach (var permission2 in Database2.SqlPermissions)
+                    foreach (var permission2 in Database2.Permissions)
                     {
                         if (permission2.FullId == permission1.FullId)
                         {
@@ -890,7 +922,7 @@
                 }
             }
 
-            foreach (var permission2 in Database2.SqlPermissions)
+            foreach (var permission2 in Database2.Permissions)
             {
                 if (permission2.Type == objectType && permission2.ObjectName == objectName)
                 {
@@ -900,23 +932,6 @@
                     }
                 }
             }
-        }
-
-        private void GetDatabaseSchemas()
-        {
-            if (string.IsNullOrEmpty(options.ConnectionString1) || string.IsNullOrEmpty(options.ConnectionString2))
-            {
-                throw new InvalidOperationException("Connection strings must be set");
-            }
-
-            if (options.ConnectionString1.ToLower() == options.ConnectionString2.ToLower())
-            {
-                throw new InvalidOperationException("Connection strings must be different");
-            }
-
-            Database1 = new SqlDatabase(options.ConnectionString1, options);
-
-            Database2 = new SqlDatabase(options.ConnectionString2, options);
         }
     }
 }
