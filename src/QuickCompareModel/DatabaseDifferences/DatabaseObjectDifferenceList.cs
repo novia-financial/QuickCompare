@@ -3,8 +3,15 @@
     using System.Collections.Generic;
     using System.Text;
 
+    /// <summary> Model to represent a complex database element and track the differences across two databases. </summary>
     public class DatabaseObjectDifferenceList : BaseDifference
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="DatabaseObjectDifferenceList"/> class
+        /// with values determining whether the item exists in each database.
+        /// </summary>
+        /// <param name="existsInDatabase1">Value indicating whether the item exists in database 1.</param>
+        /// <param name="existsInDatabase2">Value indicating whether the item exists in database 2.</param>
         public DatabaseObjectDifferenceList(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
@@ -14,11 +21,9 @@
 
         public string ObjectDefinition2 { get; set; }
 
-        public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
-            = new Dictionary<string, ExtendedPropertyDifference>();
+        public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; } = new Dictionary<string, ExtendedPropertyDifference>();
 
-        public Dictionary<string, BaseDifference> PermissionDifferences { get; set; }
-            = new Dictionary<string, BaseDifference>();
+        public Dictionary<string, BaseDifference> PermissionDifferences { get; set; } = new Dictionary<string, BaseDifference>();
 
         public bool DefinitionsAreDifferent => CleanDefinitionText(ObjectDefinition1, true) != CleanDefinitionText(ObjectDefinition2, true);
 
@@ -56,6 +61,7 @@
 
         public bool IsDifferent => !ExistsInBothDatabases || DefinitionsAreDifferent || HasPermissionDifferences || HasExtendedPropertyDifferences;
 
+        /// <summary> Gets a text description of the difference or returns an empty string if no difference is detected. </summary>
         public override string ToString()
         {
             if (!IsDifferent)

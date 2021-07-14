@@ -16,6 +16,11 @@
         public string ConnectionString2 { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to ignore remarks and comments.
+        /// </summary>
+        public bool IgnoreSqlComments { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets a value indicating whether to compare table columns.
         /// </summary>
         public bool CompareColumns { get; set; } = true;
@@ -29,11 +34,6 @@
         /// Gets or sets a value indicating whether to compare views/functions/procedures.
         /// </summary>
         public bool CompareObjects { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to ignore remarks and comments.
-        /// </summary>
-        public bool IgnoreSQLComments { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether to compare indexes.

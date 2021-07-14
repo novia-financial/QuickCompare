@@ -3,6 +3,8 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
+    using System.IO;
+    using System.Reflection;
     using System.Text.RegularExpressions;
     using QuickCompareModel.DatabaseSchema;
 
@@ -123,9 +125,25 @@
 
         #region Load methods
 
+        private string LoadQueryFromResource(string queryName)
+        {
+            var sqlQuery = string.Empty;
+
+            var resourceName = $"QuickCompareModel.{queryName}.sql";
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            {
+                if (stream != null)
+                {
+                    sqlQuery = new StreamReader(stream).ReadToEnd();
+                }
+            }
+
+            return sqlQuery;
+        }
+
         private void LoadTableNames(SqlConnection connection)
         {
-            using var command = new SqlCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE (TABLE_TYPE = 'BASE TABLE') AND (TABLE_NAME <> 'dtproperties') AND (TABLE_NAME NOT LIKE 'sys%') AND (TABLE_NAME NOT LIKE 'MS%') ORDER BY TABLE_NAME", connection);
+            using var command = new SqlCommand(LoadQueryFromResource("TableNames.sql"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
