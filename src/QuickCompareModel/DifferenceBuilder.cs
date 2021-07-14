@@ -39,23 +39,19 @@
             this.Database2 = database2;
         }
 
-        internal SqlDatabase Database1 { get; set; }
+        /// <summary> Gets or sets the model for database 1. </summary>
+        public SqlDatabase Database1 { get; set; }
 
-        internal SqlDatabase Database2 { get; set; }
+        /// <summary> Gets or sets the model for database 2. </summary>
+        public SqlDatabase Database2 { get; set; }
 
-        /// <summary>
-        /// Handler for when the status message changes.
-        /// </summary>
+        /// <summary> Handler for when the status message changes. </summary>
         public event EventHandler<StatusChangedEventArgs> ComparisonStatusChanged;
 
-        /// <summary>
-        /// Model representing the differences between two databases.
-        /// </summary>
+        /// <summary> Model representing the differences between two databases. </summary>
         public Differences Differences { get; set; }
 
-        /// <summary>
-        /// Inspect two database schemas and build the <see cref="Differences"/> model.
-        /// </summary>
+        /// <summary> Inspect two database schemas and build the <see cref="Differences"/> model. </summary>
         public void BuildDifferences()
         {
             if (Database1 == null)
@@ -163,12 +159,14 @@
                     }
                 }
 
-                foreach (var table2 in Database2.Tables.Keys)
+                Differences.TableDifferences.Add(table1, diff);
+            }
+
+            foreach (var table2 in Database2.Tables.Keys)
+            {
+                if (!Differences.TableDifferences.ContainsKey(table2))
                 {
-                    if (!Differences.TableDifferences.ContainsKey(table2))
-                    {
-                        Differences.TableDifferences.Add(table2, new TableDifferenceList(false, true));
-                    }
+                    Differences.TableDifferences.Add(table2, new TableDifferenceList(false, true));
                 }
             }
         }
