@@ -4,9 +4,9 @@
     using System.Linq;
     using System.Text;
 
-    public class TableSubItemDifferenceList : BaseDifference
+    public class TableSubItemDifference : BaseDifference
     {
-        public TableSubItemDifferenceList(bool existsInDatabase1, bool existsInDatabase2)
+        public TableSubItemDifference(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
         }

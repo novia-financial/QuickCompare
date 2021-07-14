@@ -4,15 +4,15 @@
     using System.Text;
 
     /// <summary> Model to represent a complex database element and track the differences across two databases. </summary>
-    public class DatabaseObjectDifferenceList : BaseDifference
+    public class DatabaseObjectDifference : BaseDifference
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="DatabaseObjectDifferenceList"/> class
+        /// Initialises a new instance of the <see cref="DatabaseObjectDifference"/> class
         /// with values determining whether the item exists in each database.
         /// </summary>
         /// <param name="existsInDatabase1">Value indicating whether the item exists in database 1.</param>
         /// <param name="existsInDatabase2">Value indicating whether the item exists in database 2.</param>
-        public DatabaseObjectDifferenceList(bool existsInDatabase1, bool existsInDatabase2)
+        public DatabaseObjectDifference(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
         }

@@ -149,7 +149,7 @@
         {
             foreach (var table1 in Database1.Tables.Keys)
             {
-                var diff = new TableDifferenceList(true, false);
+                var diff = new TableDifference(true, false);
                 foreach (var table2 in Database2.Tables.Keys)
                 {
                     if (table2 == table1)
@@ -166,7 +166,7 @@
             {
                 if (!Differences.TableDifferences.ContainsKey(table2))
                 {
-                    Differences.TableDifferences.Add(table2, new TableDifferenceList(false, true));
+                    Differences.TableDifferences.Add(table2, new TableDifference(false, true));
                 }
             }
         }
@@ -214,7 +214,7 @@
         {
             foreach (var column1 in Database1.Tables[tableName].ColumnDetails)
             {
-                var diff = new TableSubItemWithPropertiesDifferenceList(true, false);
+                var diff = new TableSubItemWithPropertiesDifference(true, false);
                 foreach (var column2 in Database2.Tables[tableName].ColumnDetails)
                 {
                     if (column2.ColumnName == column1.ColumnName)
@@ -231,12 +231,12 @@
             {
                 if (!Differences.TableDifferences[tableName].ColumnDifferences.ContainsKey(column2.ColumnName))
                 {
-                    Differences.TableDifferences[tableName].ColumnDifferences.Add(column2.ColumnName, new TableSubItemWithPropertiesDifferenceList(false, true));
+                    Differences.TableDifferences[tableName].ColumnDifferences.Add(column2.ColumnName, new TableSubItemWithPropertiesDifference(false, true));
                 }
             }
         }
 
-        private void InspectColumns(string tableName, TableSubItemWithPropertiesDifferenceList diff, SqlColumnDetail column1, SqlColumnDetail column2)
+        private void InspectColumns(string tableName, TableSubItemWithPropertiesDifference diff, SqlColumnDetail column1, SqlColumnDetail column2)
         {
             if (options.CompareOrdinalPositions)
             {
@@ -368,7 +368,7 @@
             diff.ExistsInDatabase2 = true;
         }
 
-        private void InspectColumnProperties(string tableName, string columnName, TableSubItemWithPropertiesDifferenceList columnDiff)
+        private void InspectColumnProperties(string tableName, string columnName, TableSubItemWithPropertiesDifference columnDiff)
         {
             var hasFoundColumn1Description = false;
 
@@ -430,7 +430,7 @@
         {
             foreach (var index1 in Database1.Tables[tableName].Indexes)
             {
-                var diff = new TableSubItemWithPropertiesDifferenceList(true, false, index1.ItemType);
+                var diff = new TableSubItemWithPropertiesDifference(true, false, index1.ItemType);
 
                 foreach (var index2 in Database2.Tables[tableName].Indexes)
                 {
@@ -530,12 +530,12 @@
             {
                 if (!Differences.TableDifferences[tableName].IndexDifferences.ContainsKey(index2.IndexName))
                 {
-                    Differences.TableDifferences[tableName].IndexDifferences.Add(index2.IndexName, new TableSubItemWithPropertiesDifferenceList(false, true));
+                    Differences.TableDifferences[tableName].IndexDifferences.Add(index2.IndexName, new TableSubItemWithPropertiesDifference(false, true));
                 }
             }
         }
 
-        private void InspectIndexProperties(string tableName, string indexName, TableSubItemWithPropertiesDifferenceList indexDiff)
+        private void InspectIndexProperties(string tableName, string indexName, TableSubItemWithPropertiesDifference indexDiff)
         {
             foreach (var property1 in Database1.ExtendedProperties)
             {
@@ -573,7 +573,7 @@
         {
             foreach (var relation1 in Database1.Tables[tableName].Relations)
             {
-                var diff = new TableSubItemDifferenceList(true, false);
+                var diff = new TableSubItemDifference(true, false);
                 foreach (var relation2 in Database2.Tables[tableName].Relations)
                 {
                     if (relation2.RelationName == relation1.RelationName)
@@ -610,7 +610,7 @@
             {
                 if (!Differences.TableDifferences[tableName].RelationshipDifferences.ContainsKey(relation2.RelationName))
                 {
-                    Differences.TableDifferences[tableName].RelationshipDifferences.Add(relation2.RelationName, new TableSubItemDifferenceList(false, true));
+                    Differences.TableDifferences[tableName].RelationshipDifferences.Add(relation2.RelationName, new TableSubItemDifference(false, true));
                 }
             }
         }
@@ -688,7 +688,7 @@
         {
             foreach (var trigger1 in Database1.Tables[tableName].Triggers)
             {
-                var diff = new TableSubItemDifferenceList(true, false);
+                var diff = new TableSubItemDifference(true, false);
                 foreach (var trigger2 in Database2.Tables[tableName].Triggers)
                 {
                     if (trigger2.TableName == tableName && trigger2.TriggerName == trigger1.TriggerName)
@@ -750,7 +750,7 @@
             {
                 if (!Differences.TableDifferences[tableName].TriggerDifferences.ContainsKey(trigger2.TriggerName))
                 {
-                    Differences.TableDifferences[tableName].TriggerDifferences.Add(trigger2.TriggerName, new TableSubItemDifferenceList(false, true));
+                    Differences.TableDifferences[tableName].TriggerDifferences.Add(trigger2.TriggerName, new TableSubItemDifference(false, true));
                 }
             }
         }
@@ -759,7 +759,7 @@
         {
             foreach (var synonym1 in Database1.Synonyms.Keys)
             {
-                var diff = new DatabaseObjectDifferenceList(true, false);
+                var diff = new DatabaseObjectDifference(true, false);
                 foreach (var synonym2 in Database2.Synonyms.Keys)
                 {
                     if (synonym2 == synonym1)
@@ -789,7 +789,7 @@
             {
                 if (!Differences.SynonymDifferences.ContainsKey(synonym2))
                 {
-                    Differences.SynonymDifferences.Add(synonym2, new DatabaseObjectDifferenceList(false, true));
+                    Differences.SynonymDifferences.Add(synonym2, new DatabaseObjectDifference(false, true));
                 }
             }
         }
@@ -798,7 +798,7 @@
         {
             foreach (var view1 in Database1.Views.Keys)
             {
-                var diff = new DatabaseObjectDifferenceList(true, false);
+                var diff = new DatabaseObjectDifference(true, false);
                 foreach (var view2 in Database2.Views.Keys)
                 {
                     if (view2 == view1)
@@ -828,7 +828,7 @@
             {
                 if (!Differences.ViewDifferences.ContainsKey(view2))
                 {
-                    Differences.ViewDifferences.Add(view2, new DatabaseObjectDifferenceList(false, true));
+                    Differences.ViewDifferences.Add(view2, new DatabaseObjectDifference(false, true));
                 }
             }
         }
@@ -837,7 +837,7 @@
         {
             foreach (var routine1 in Database1.UserRoutines.Keys)
             {
-                var diff = new DatabaseObjectDifferenceList(true, false);
+                var diff = new DatabaseObjectDifference(true, false);
                 var isFunction = Database1.UserRoutines[routine1].RoutineType.ToLower() == "function";
                 foreach (var routine2 in Database2.UserRoutines.Keys)
                 {
@@ -877,20 +877,20 @@
                 {
                     if (!Differences.FunctionDifferences.ContainsKey(routine2))
                     {
-                        Differences.FunctionDifferences.Add(routine2, new DatabaseObjectDifferenceList(false, true));
+                        Differences.FunctionDifferences.Add(routine2, new DatabaseObjectDifference(false, true));
                     }
                 }
                 else
                 {
                     if (!Differences.StoredProcedureDifferences.ContainsKey(routine2))
                     {
-                        Differences.StoredProcedureDifferences.Add(routine2, new DatabaseObjectDifferenceList(false, true));
+                        Differences.StoredProcedureDifferences.Add(routine2, new DatabaseObjectDifference(false, true));
                     }
                 }
             }
         }
 
-        private void InspectObjectProperties(string objectName, DatabaseObjectDifferenceList objectDiff)
+        private void InspectObjectProperties(string objectName, DatabaseObjectDifference objectDiff)
         {
             foreach (var property1 in Database1.ExtendedProperties)
             {
@@ -924,7 +924,7 @@
             }
         }
 
-        private void InspectObjectPermissions(string objectName, PermissionObjectType objectType, DatabaseObjectDifferenceList objectDiff)
+        private void InspectObjectPermissions(string objectName, PermissionObjectType objectType, DatabaseObjectDifference objectDiff)
         {
             foreach (var permission1 in Database1.Permissions)
             {

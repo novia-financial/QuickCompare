@@ -3,24 +3,24 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class TableDifferenceList : BaseDifference
+    public class TableDifference : BaseDifference
     {
-        public TableDifferenceList(bool existsInDatabase1, bool existsInDatabase2)
+        public TableDifference(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
         }
 
-        public Dictionary<string, TableSubItemWithPropertiesDifferenceList> ColumnDifferences { get; set; }
-            = new Dictionary<string, TableSubItemWithPropertiesDifferenceList>();
+        public Dictionary<string, TableSubItemWithPropertiesDifference> ColumnDifferences { get; set; }
+            = new Dictionary<string, TableSubItemWithPropertiesDifference>();
 
-        public Dictionary<string, TableSubItemDifferenceList> RelationshipDifferences { get; set; }
-            = new Dictionary<string, TableSubItemDifferenceList>();
+        public Dictionary<string, TableSubItemDifference> RelationshipDifferences { get; set; }
+            = new Dictionary<string, TableSubItemDifference>();
 
-        public Dictionary<string, TableSubItemWithPropertiesDifferenceList> IndexDifferences { get; set; }
-            = new Dictionary<string, TableSubItemWithPropertiesDifferenceList>();
+        public Dictionary<string, TableSubItemWithPropertiesDifference> IndexDifferences { get; set; }
+            = new Dictionary<string, TableSubItemWithPropertiesDifference>();
 
-        public Dictionary<string, TableSubItemDifferenceList> TriggerDifferences { get; set; }
-            = new Dictionary<string, TableSubItemDifferenceList>();
+        public Dictionary<string, TableSubItemDifference> TriggerDifferences { get; set; }
+            = new Dictionary<string, TableSubItemDifference>();
 
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
             = new Dictionary<string, ExtendedPropertyDifference>();

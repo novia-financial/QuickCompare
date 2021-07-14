@@ -15,20 +15,20 @@
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
             = new Dictionary<string, ExtendedPropertyDifference>();
 
-        public Dictionary<string, TableDifferenceList> TableDifferences { get; set; }
-            = new Dictionary<string, TableDifferenceList>();
+        public Dictionary<string, TableDifference> TableDifferences { get; set; }
+            = new Dictionary<string, TableDifference>();
 
-        public Dictionary<string, DatabaseObjectDifferenceList> FunctionDifferences { get; set; }
-            = new Dictionary<string, DatabaseObjectDifferenceList>();
+        public Dictionary<string, DatabaseObjectDifference> FunctionDifferences { get; set; }
+            = new Dictionary<string, DatabaseObjectDifference>();
 
-        public Dictionary<string, DatabaseObjectDifferenceList> StoredProcedureDifferences { get; set; }
-            = new Dictionary<string, DatabaseObjectDifferenceList>();
+        public Dictionary<string, DatabaseObjectDifference> StoredProcedureDifferences { get; set; }
+            = new Dictionary<string, DatabaseObjectDifference>();
 
-        public Dictionary<string, DatabaseObjectDifferenceList> ViewDifferences { get; set; }
-            = new Dictionary<string, DatabaseObjectDifferenceList>();
+        public Dictionary<string, DatabaseObjectDifference> ViewDifferences { get; set; }
+            = new Dictionary<string, DatabaseObjectDifference>();
 
-        public Dictionary<string, DatabaseObjectDifferenceList> SynonymDifferences { get; set; }
-            = new Dictionary<string, DatabaseObjectDifferenceList>();
+        public Dictionary<string, DatabaseObjectDifference> SynonymDifferences { get; set; }
+            = new Dictionary<string, DatabaseObjectDifference>();
 
         public bool HasDifferences => ExtendedPropertyDifferences.Count + TableDifferences.Count + FunctionDifferences.Count +
             StoredProcedureDifferences.Count + ViewDifferences.Count + SynonymDifferences.Count > 0;

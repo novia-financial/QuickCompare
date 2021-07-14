@@ -3,15 +3,15 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class TableSubItemWithPropertiesDifferenceList
-        : TableSubItemDifferenceList
+    public class TableSubItemWithPropertiesDifference
+        : TableSubItemDifference
     {
-        public TableSubItemWithPropertiesDifferenceList(bool existsInDatabase1, bool existsInDatabase2)
+        public TableSubItemWithPropertiesDifference(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
         }
 
-        public TableSubItemWithPropertiesDifferenceList(bool existsInDatabase1, bool existsInDatabase2, string itemType)
+        public TableSubItemWithPropertiesDifference(bool existsInDatabase1, bool existsInDatabase2, string itemType)
             : base(existsInDatabase1, existsInDatabase2) => this.ItemType = itemType;
 
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
