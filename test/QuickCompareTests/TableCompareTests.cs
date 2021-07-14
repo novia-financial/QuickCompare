@@ -1,24 +1,11 @@
 ﻿namespace QuickCompareTests
 {
     using FluentAssertions;
-    using QuickCompareModel;
     using QuickCompareModel.DatabaseSchema;
     using Xunit;
 
     public class TableCompareTests
     {
-        [Fact]
-        public void Database_FriendlyName_ReturnsAsExpected()
-        {
-            var expectedResult = "[localhost].[Northwind]";
-
-            new SqlDatabase("Data Source=localhost;Initial Catalog=Northwind;Integrated Security=True")
-                .FriendlyName.Should().Be(expectedResult);
-
-            new SqlDatabase("Server=localhost;Database=Northwind;Integrated Security=True")
-                .FriendlyName.Should().Be(expectedResult);
-        }
-
         [Fact]
         public void TableMissingFromDatabase1_IsReported()
         {
