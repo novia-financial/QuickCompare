@@ -1,4 +1,6 @@
-﻿namespace QuickCompareModel.DatabaseSchema
+﻿using QuickCompareModel.DatabaseSchema.Enums;
+
+namespace QuickCompareModel.DatabaseSchema
 {
     public class SqlExtendedProperty
     {
@@ -29,15 +31,5 @@
                             ? string.IsNullOrEmpty(ColumnName) ? PropertyObjectType.Routine : PropertyObjectType.RoutineColumn
                             : PropertyObjectType.Database
                     : PropertyObjectType.Index;
-    }
-
-    public enum PropertyObjectType
-    {
-        Database,
-        Routine,
-        RoutineColumn,
-        Table,
-        TableColumn,
-        Index,
     }
 }

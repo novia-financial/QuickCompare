@@ -1,4 +1,6 @@
-﻿namespace QuickCompareModel.DatabaseSchema
+﻿using QuickCompareModel.DatabaseSchema.Enums;
+
+namespace QuickCompareModel.DatabaseSchema
 {
     public class SqlPermission
     {
@@ -33,15 +35,5 @@
         public override string ToString() => PermissionType == "REFERENCES"
                 ? $"REFERENCES column: [{ColumnName}] {(PermissionState == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(RoleName) ? "user" : "role")}: [{(string.IsNullOrEmpty(RoleName) ? UserName : RoleName)}]"
                 : $"[{PermissionType}] {(PermissionState == "GRANT" ? string.Empty : "DENIED ")}for {(string.IsNullOrEmpty(RoleName) ? "user" : "role")}: [{(string.IsNullOrEmpty(RoleName) ? UserName : RoleName)}]";
-    }
-
-    public enum PermissionObjectType
-    {
-        Database,
-        SqlStoredProcedure,
-        SqlFunction,
-        Synonym,
-        UserTable,
-        View,
     }
 }

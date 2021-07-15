@@ -27,12 +27,8 @@
             }
             else if (Differences.Count > 1)
             {
-                sb.Append($"\r\n{TabIndent}");
+                sb.Append($"\r\n{TabIndent} - ");
                 sb.Append(string.Join($"\r\n{TabIndent} - ", Differences.ToArray()));
-                sb.Append("\r\n");
-            }
-            else
-            {
                 sb.Append("\r\n");
             }
 

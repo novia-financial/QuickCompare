@@ -332,7 +332,7 @@
                         case "ROUTINE_NAME":
                             name = dr.GetString(i);
                             break;
-                        case nameof(SqlUserRoutine.RoutineType):
+                        case "ROUTINE_TYPE":
                             routine.RoutineType = dr.GetString(i);
                             break;
                     }
@@ -398,28 +398,28 @@
             {
                 switch (dr.GetName(i))
                 {
-                    case nameof(SqlRelation.RelationName):
+                    case "RELATION_NAME":
                         relation.RelationName = dr.GetString(i);
                         break;
-                    case nameof(SqlRelation.ChildTable):
+                    case "CHILD_TABLE":
                         relation.ChildTable = dr.GetString(i);
                         break;
-                    case nameof(SqlRelation.ChildColumns):
+                    case "CHILD_COLUMNS":
                         relation.ChildColumns = dr.GetString(i);
                         break;
-                    case nameof(SqlRelation.UniqueConstraintName):
+                    case "UNIQUE_CONSTRAINT_NAME":
                         relation.UniqueConstraintName = dr.GetString(i);
                         break;
-                    case nameof(SqlRelation.ParentTable):
+                    case "PARENT_TABLE":
                         relation.ParentTable = dr.GetString(i);
                         break;
-                    case nameof(SqlRelation.ParentColumns):
+                    case "PARENT_COLUMNS":
                         relation.ParentColumns = dr.GetString(i);
                         break;
-                    case nameof(SqlRelation.UpdateRule):
+                    case "UPDATE_RULE":
                         relation.UpdateRule = dr.GetString(i);
                         break;
-                    case nameof(SqlRelation.DeleteRule):
+                    case "DELETE_RULE":
                         relation.DeleteRule = dr.GetString(i);
                         break;
                 }
@@ -438,109 +438,109 @@
             {
                 switch (dr.GetName(i))
                 {
-                    case nameof(SqlColumnDetail.TableSchema):
+                    case "TABLE_SCHEMA":
                         detail.TableSchema = dr.GetString(i);
                         break;
-                    case nameof(SqlColumnDetail.TableName):
+                    case "TABLE_NAME":
                         detail.TableName = dr.GetString(i);
                         break;
-                    case nameof(SqlColumnDetail.ColumnName):
+                    case "COLUMN_NAME":
                         detail.ColumnName = dr.GetString(i);
                         break;
-                    case nameof(SqlColumnDetail.OrdinalPosition):
+                    case "ORDINAL_POSITION":
                         detail.OrdinalPosition = dr.GetInt32(i);
                         break;
-                    case nameof(SqlColumnDetail.ColumnDefault):
+                    case "COLUMN_DEFAULT":
                         if (!dr.IsDBNull(i))
                         {
                             detail.ColumnDefault = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.IsNullable):
+                    case "IS_NULLABLE":
                         if (!dr.IsDBNull(i))
                         {
                             detail.IsNullable = dr.GetString(i) == "YES";
                         }
                         break;
-                    case nameof(SqlColumnDetail.DataType):
+                    case "DATA_TYPE":
                         detail.DataType = dr.GetString(i);
                         break;
-                    case nameof(SqlColumnDetail.CharacterMaximumLength):
+                    case "CHARACTER_MAXIMUM_LENGTH":
                         if (!dr.IsDBNull(i))
                         {
                             detail.CharacterMaximumLength = dr.GetInt32(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.CharacterOctetLength):
+                    case "CHARACTER_OCTET_LENGTH":
                         if (!dr.IsDBNull(i))
                         {
                             detail.CharacterOctetLength = dr.GetInt32(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.NumericPrecision):
+                    case "NUMERIC_PRECISION":
                         if (!dr.IsDBNull(i))
                         {
                             detail.NumericPrecision = dr.GetByte(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.NumericPrecisionRadix):
+                    case "NUMERIC_PRECISION_RADIX":
                         if (!dr.IsDBNull(i))
                         {
                             detail.NumericPrecisionRadix = dr.GetInt16(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.NumericScale):
+                    case "NUMERIC_SCALE":
                         if (!dr.IsDBNull(i))
                         {
                             detail.NumericScale = dr.GetInt32(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.DatetimePrecision):
+                    case "DATETIME_PRECISION":
                         if (!dr.IsDBNull(i))
                         {
                             detail.DatetimePrecision = dr.GetInt16(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.CharacterSetName):
+                    case "CHARACTER_SET_NAME":
                         if (!dr.IsDBNull(i))
                         {
                             detail.CharacterSetName = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.CollationName):
+                    case "COLLATION_NAME":
                         if (!dr.IsDBNull(i))
                         {
                             detail.CollationName = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.IsFullTextIndexed):
+                    case "IS_FULL_TEXT_INDEXED":
                         detail.IsFullTextIndexed = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlColumnDetail.IsComputed):
+                    case "IS_COMPUTED":
                         detail.IsComputed = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlColumnDetail.IsIdentity):
+                    case "IS_IDENTITY":
                         detail.IsIdentity = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlColumnDetail.IdentitySeed):
+                    case "IDENTITY_SEED":
                         if (!dr.IsDBNull(i))
                         {
                             detail.IdentitySeed = dr.GetDecimal(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.IdentityIncrement):
+                    case "IDENTITY_INCREMENT":
                         if (!dr.IsDBNull(i))
                         {
                             detail.IdentityIncrement = dr.GetDecimal(i);
                         }
                         break;
-                    case nameof(SqlColumnDetail.IsSparse):
+                    case "IS_SPARSE":
                         if (!dr.IsDBNull(i))
                         {
                             detail.IsSparse = dr.GetInt32(i) == 1;
                         }
                         break;
-                    case nameof(SqlColumnDetail.IsColumnSet):
+                    case "IS_COLUMN_SET":
                         if (!dr.IsDBNull(i))
                         {
                             detail.IsColumnSet = dr.GetInt32(i) == 1;
@@ -562,40 +562,40 @@
             {
                 switch (dr.GetName(i))
                 {
-                    case nameof(SqlPermission.UserName):
+                    case "UserName":
                         permission.UserName = dr.GetString(i);
                         break;
-                    case nameof(SqlPermission.RoleName):
+                    case "ROLE_NAME":
                         if (!dr.IsDBNull(i))
                         {
-                            permission.ColumnName = dr.GetString(i);
+                            permission.RoleName = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlPermission.PermissionType):
+                    case "PERMISSION_TYPE":
                         if (!dr.IsDBNull(i))
                         {
-                            permission.ColumnName = dr.GetString(i);
+                            permission.PermissionType = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlPermission.PermissionState):
+                    case "PERMISSION_STATE":
                         if (!dr.IsDBNull(i))
                         {
-                            permission.ColumnName = dr.GetString(i);
+                            permission.PermissionState = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlPermission.ObjectType):
+                    case "OBJECT_TYPE":
                         if (!dr.IsDBNull(i))
                         {
-                            permission.ColumnName = dr.GetString(i);
+                            permission.ObjectType = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlPermission.ObjectName):
+                    case "OBJECT_NAME":
                         if (!dr.IsDBNull(i))
                         {
-                            permission.ColumnName = dr.GetString(i);
+                            permission.ObjectName = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlPermission.ColumnName):
+                    case "COLUMN_NAME":
                         if (!dr.IsDBNull(i))
                         {
                             permission.ColumnName = dr.GetString(i);
@@ -617,37 +617,37 @@
             {
                 switch (dr.GetName(i))
                 {
-                    case nameof(SqlExtendedProperty.PropertyType):
+                    case "PROPERTY_TYPE":
                         property.PropertyType = dr.GetString(i);
                         break;
-                    case nameof(SqlExtendedProperty.ObjectName):
+                    case "OBJECT_NAME":
                         if (!dr.IsDBNull(i))
                         {
                             property.ObjectName = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlExtendedProperty.ColumnName):
+                    case "COLUMN_NAME":
                         if (!dr.IsDBNull(i))
                         {
                             property.ColumnName = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlExtendedProperty.PropertyName):
+                    case "PROPERTY_NAME":
                         property.PropertyName = dr.GetString(i);
                         break;
-                    case nameof(SqlExtendedProperty.PropertyValue):
+                    case "PROPERTY_VALUE":
                         if (!dr.IsDBNull(i))
                         {
                             property.PropertyValue = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlExtendedProperty.IndexName):
+                    case "INDEX_NAME":
                         if (!dr.IsDBNull(i))
                         {
                             property.IndexName = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlExtendedProperty.TableName):
+                    case "TABLE_NAME":
                         if (!dr.IsDBNull(i))
                         {
                             property.TableName = dr.GetString(i);
@@ -669,47 +669,47 @@
             {
                 switch (dr.GetName(i))
                 {
-                    case nameof(SqlTrigger.TriggerName):
+                    case "TRIGGER_NAME":
                         trigger.TriggerName = dr.GetString(i);
                         break;
-                    case nameof(SqlTrigger.TriggerOwner):
+                    case "TRIGGER_OWNER":
                         if (!dr.IsDBNull(i))
                         {
-                            trigger.TriggerName = dr.GetString(i);
+                            trigger.TriggerOwner = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlTrigger.TableSchema):
+                    case "TABLE_SCHEMA":
                         if (!dr.IsDBNull(i))
                         {
-                            trigger.TriggerName = dr.GetString(i);
+                            trigger.TableSchema = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlTrigger.TableName):
+                    case "TABLE_NAME":
                         if (!dr.IsDBNull(i))
                         {
-                            trigger.TriggerName = dr.GetString(i);
+                            trigger.TableName = dr.GetString(i);
                         }
                         break;
-                    case nameof(SqlTrigger.IsUpdate):
+                    case "IS_UPDATE":
                         trigger.IsUpdate = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlTrigger.IsDelete):
+                    case "IS_DELETE":
                         trigger.IsDelete = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlTrigger.IsInsert):
+                    case "IS_INSERT":
                         trigger.IsInsert = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlTrigger.IsAfter):
+                    case "IS_AFTER":
                         trigger.IsAfter = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlTrigger.IsInsteadOf):
+                    case "IS_INSTEAD_OF":
                         trigger.IsInsteadOf = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlTrigger.IsDisabled):
+                    case "IS_DISABLED":
                         trigger.IsDisabled = dr.GetInt32(i) == 1;
                         break;
-                    case nameof(SqlTrigger.TriggerContent):
-                        trigger.TriggerName = dr.GetString(i);
+                    case "TRIGGER_CONTENT":
+                        trigger.TriggerContent = dr.GetString(i);
                         break;
                 }
 

@@ -4,6 +4,7 @@
     using Microsoft.Extensions.Options;
     using QuickCompareModel.DatabaseDifferences;
     using QuickCompareModel.DatabaseSchema;
+    using QuickCompareModel.DatabaseSchema.Enums;
 
     /// <summary>
     /// Class responsible for building a set of differences between two database instances.
@@ -631,10 +632,7 @@
                         }
                     }
 
-                    if (!Differences.TableDifferences[tableName].PermissionDifferences.ContainsKey(permission1.ToString()))
-                    {
-                        Differences.TableDifferences[tableName].PermissionDifferences.Add(permission1.ToString(), diff);
-                    }
+                    Differences.TableDifferences[tableName].PermissionDifferences.Add(permission1.ToString(), diff);
                 }
             }
 
@@ -853,8 +851,8 @@
                             InspectObjectPermissions(routine2, isFunction ? PermissionObjectType.SqlFunction : PermissionObjectType.SqlStoredProcedure, diff);
                         }
 
-                        diff.ObjectDefinition1 = Database1.Synonyms[routine2];
-                        diff.ObjectDefinition2 = Database2.Synonyms[routine2];
+                        diff.ObjectDefinition1 = Database1.UserRoutines[routine2].RoutineDefinition;
+                        diff.ObjectDefinition2 = Database2.UserRoutines[routine2].RoutineDefinition;
 
                         diff.ExistsInDatabase2 = true;
                         break;
