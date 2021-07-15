@@ -19,7 +19,7 @@ JOIN		sys.database_principals roleprinc
 				ON roleprinc.[principal_id] = members.[role_principal_id]
 JOIN		sys.database_principals memberprinc
 				ON memberprinc.[principal_id] = members.[member_principal_id]
-LEFT JOIN	sys.login_token ulogin#
+LEFT JOIN	sys.login_token ulogin
 				ON memberprinc.[sid] = ulogin.[sid]
 LEFT JOIN	sys.database_permissions perm
 				ON perm.[grantee_principal_id] = roleprinc.[principal_id]
