@@ -3,36 +3,44 @@
     using System.Collections.Generic;
     using System.Text;
 
-    /// <summary>
-    /// Model to hold lists of various differences between two databases.
-    /// </summary>
+    /// <summary> Model to hold lists of various differences between two databases. </summary>
     public class Differences
     {
+        /// <summary> Gets a friendly name for database 1. </summary>
         public string Database1 { get; set; }
 
+        /// <summary> Gets a friendly name for database 2. </summary>
         public string Database2 { get; set; }
 
+        /// <summary> Set of models to represent extended properties and track the differences across two databases. </summary>
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
             = new Dictionary<string, ExtendedPropertyDifference>();
 
+        /// <summary> Set of models to represent tables and track the differences across two databases. </summary>
         public Dictionary<string, TableDifference> TableDifferences { get; set; }
             = new Dictionary<string, TableDifference>();
 
+        /// <summary> Set of models to represent functions and track the differences across two databases. </summary>
         public Dictionary<string, DatabaseObjectDifference> FunctionDifferences { get; set; }
             = new Dictionary<string, DatabaseObjectDifference>();
 
+        /// <summary> Set of models to represent stored procedures and track the differences across two databases. </summary>
         public Dictionary<string, DatabaseObjectDifference> StoredProcedureDifferences { get; set; }
             = new Dictionary<string, DatabaseObjectDifference>();
 
+        /// <summary> Set of models to represent views and track the differences across two databases. </summary>
         public Dictionary<string, DatabaseObjectDifference> ViewDifferences { get; set; }
             = new Dictionary<string, DatabaseObjectDifference>();
 
+        /// <summary> Set of models to represent synonyms and track the differences across two databases. </summary>
         public Dictionary<string, DatabaseObjectDifference> SynonymDifferences { get; set; }
             = new Dictionary<string, DatabaseObjectDifference>();
 
+        /// <summary> Gets a value indicating whether any differences have been tracked. </summary>
         public bool HasDifferences => ExtendedPropertyDifferences.Count + TableDifferences.Count + FunctionDifferences.Count +
             StoredProcedureDifferences.Count + ViewDifferences.Count + SynonymDifferences.Count > 0;
 
+        /// <summary> Gets a report of the differences, whether any were detected or not. </summary>
         public override string ToString()
         {
             var output = new StringBuilder("QuickCompare schema comparison result\r\n\r\n");

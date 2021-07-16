@@ -11,7 +11,7 @@ The Difference objects also act as a report generator, with overridden `ToString
 
 Input parameters are accepted via an `IOptions` implementation, `QuickCompareOptions`.
 
-_Note that this was created as part of an Innovation Day event so is lacking initial unit tests and XML comments._
+_Note that this was created as part of an Innovation Day event._
 
 ### Example usage
 
@@ -43,3 +43,9 @@ The `DifferenceBuilder` class raises an event when the status changes - subscrib
 
 The SQL queries are located in the folder DatabaseSchema/Queries.
 
+#### ToDo list
+
+- Add test for formatting single/multiple results
+- Change SQL queries to select fields as word-cased, then use nameof() in the loaders
+- Include database-level permissions, such as CONNECT
+- Unit test the "HasDifferences" functions

@@ -17,16 +17,22 @@
         {
         }
 
+        /// <summary> Gets or sets the body text of the object in database 1. </summary>
         public string ObjectDefinition1 { get; set; }
 
+        /// <summary> Gets or sets the body text of the object in database 2. </summary>
         public string ObjectDefinition2 { get; set; }
 
+        /// <summary> Set of models to represent extended properties and track the differences across two databases. </summary>
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; } = new Dictionary<string, ExtendedPropertyDifference>();
 
+        /// <summary> Set of models to represent permissions and track the differences across two databases. </summary>
         public Dictionary<string, BaseDifference> PermissionDifferences { get; set; } = new Dictionary<string, BaseDifference>();
 
+        /// <summary> Gets a value indicating whether the body text is different. </summary>
         public bool DefinitionsAreDifferent => CleanDefinitionText(ObjectDefinition1, true) != CleanDefinitionText(ObjectDefinition2, true);
 
+        /// <summary> Gets a value indicating whether the permission difference set has tracked any differences. </summary>
         public bool HasPermissionDifferences
         {
             get
@@ -43,6 +49,7 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether the extended property difference set has tracked any differences. </summary>
         public bool HasExtendedPropertyDifferences
         {
             get
@@ -59,6 +66,7 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether any differences have been tracked. </summary>
         public bool IsDifferent => !ExistsInBothDatabases || DefinitionsAreDifferent || HasPermissionDifferences || HasExtendedPropertyDifferences;
 
         /// <summary> Gets a text description of the difference or returns an empty string if no difference is detected. </summary>

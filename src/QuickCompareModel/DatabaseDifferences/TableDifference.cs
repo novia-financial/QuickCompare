@@ -3,31 +3,45 @@
     using System.Collections.Generic;
     using System.Text;
 
+    /// <summary> Model to represent the table element and track the differences across two databases. </summary>
     public class TableDifference : BaseDifference
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="TableDifference"/> class
+        /// with values determining whether the item exists in each database.
+        /// </summary>
+        /// <param name="existsInDatabase1">Value indicating whether the item exists in database 1.</param>
+        /// <param name="existsInDatabase2">Value indicating whether the item exists in database 2.</param>
         public TableDifference(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
         }
 
+        /// <summary> Set of models to represent columns and track the differences across two databases. </summary>
         public Dictionary<string, TableSubItemWithPropertiesDifference> ColumnDifferences { get; set; }
             = new Dictionary<string, TableSubItemWithPropertiesDifference>();
 
+        /// <summary> Set of models to represent columns and track the differences across two databases. </summary>
         public Dictionary<string, TableSubItemDifference> RelationshipDifferences { get; set; }
             = new Dictionary<string, TableSubItemDifference>();
 
+        /// <summary> Set of models to represent indexes and track the differences across two databases. </summary>
         public Dictionary<string, TableSubItemWithPropertiesDifference> IndexDifferences { get; set; }
             = new Dictionary<string, TableSubItemWithPropertiesDifference>();
 
+        /// <summary> Set of models to represent triggers and track the differences across two databases. </summary>
         public Dictionary<string, TableSubItemDifference> TriggerDifferences { get; set; }
             = new Dictionary<string, TableSubItemDifference>();
 
+        /// <summary> Set of models to represent extended properties and track the differences across two databases. </summary>
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
             = new Dictionary<string, ExtendedPropertyDifference>();
 
+        /// <summary> Set of models to represent permissions and track the differences across two databases. </summary>
         public Dictionary<string, BaseDifference> PermissionDifferences { get; set; }
             = new Dictionary<string, BaseDifference>();
 
+        /// <summary> Gets a value indicating whether the column difference set has tracked any differences. </summary>
         public bool HasColumnDifferences
         {
             get
@@ -44,6 +58,7 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether the relation difference set has tracked any differences. </summary>
         public bool HasRelationshipDifferences
         {
             get
@@ -60,6 +75,7 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether the index difference set has tracked any differences. </summary>
         public bool HasIndexDifferences
         {
             get
@@ -76,6 +92,7 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether the trigger difference set has tracked any differences. </summary>
         public bool HasTriggerDifferences
         {
             get
@@ -92,6 +109,7 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether the permission difference set has tracked any differences. </summary>
         public bool HasPermissionDifferences
         {
             get
@@ -108,6 +126,7 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether the extended property difference set has tracked any differences. </summary>
         public bool HasExtendedPropertyDifferences
         {
             get
@@ -124,6 +143,7 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether any differences have been tracked. </summary>
         public bool IsDifferent
         {
             get
@@ -134,6 +154,7 @@
             }
         }
 
+        /// <summary> Gets a text description of the difference or returns an empty string if no difference is detected. </summary>
         public override string ToString()
         {
             if (!IsDifferent)

@@ -9,7 +9,7 @@
     /// <summary>
     /// Class responsible for building a set of differences between two database instances.
     /// </summary>
-    public class DifferenceBuilder
+    public class DifferenceBuilder : IDifferenceBuilder
     {
         private readonly QuickCompareOptions options;
 
@@ -40,19 +40,19 @@
             this.Database2 = database2;
         }
 
-        /// <summary> Gets or sets the model for database 1. </summary>
+        /// <inheritdoc/>
         public SqlDatabase Database1 { get; set; }
 
-        /// <summary> Gets or sets the model for database 2. </summary>
+        /// <inheritdoc/>
         public SqlDatabase Database2 { get; set; }
 
-        /// <summary> Handler for when the status message changes. </summary>
+        /// <inheritdoc/>
         public event EventHandler<StatusChangedEventArgs> ComparisonStatusChanged;
 
-        /// <summary> Model representing the differences between two databases. </summary>
+        /// <inheritdoc/>
         public Differences Differences { get; set; }
 
-        /// <summary> Inspect two database schemas and build the <see cref="Differences"/> model. </summary>
+        /// <inheritdoc/>
         public void BuildDifferences()
         {
             if (Database1 == null)
@@ -247,6 +247,16 @@
                 }
             }
 
+            if (column2.ColumnDefault != column1.ColumnDefault)
+            {
+                diff.Differences.Add($"default value is different - is {column1.ColumnDefault} in database 1 and is {column2.ColumnDefault} in database 2");
+            }
+
+            if (column2.IsNullable != column1.IsNullable)
+            {
+                diff.Differences.Add($"is {(column1.IsNullable ? string.Empty : "not ")}allowed null in database 1 and is {(column2.IsNullable ? string.Empty : "not ")}allowed null in database 2");
+            }
+
             if (column2.DataType != column1.DataType)
             {
                 diff.Differences.Add($"data type is different - Database 1 has type of {column1.DataType.ToUpper()} and database 2 has type of {column2.DataType.ToUpper()}");
@@ -260,9 +270,12 @@
                 }
             }
 
-            if (column2.IsNullable != column1.IsNullable)
+            if (column2.CharacterOctetLength.HasValue && column1.CharacterOctetLength.HasValue)
             {
-                diff.Differences.Add($"is {(column1.IsNullable ? string.Empty : "not ")}allowed null in database 1 and is {(column2.IsNullable ? string.Empty : "not ")}allowed null in database 2");
+                if (column2.CharacterOctetLength != column1.CharacterOctetLength)
+                {
+                    diff.Differences.Add($"character octet length is different - Database 1 has an octet length of [{column1.CharacterOctetLength:n0}] and database 2 has an octet length of [{column2.CharacterOctetLength:n0}]");
+                }
             }
 
             if (column2.NumericPrecision.HasValue && column1.NumericPrecision.HasValue)
@@ -297,9 +310,12 @@
                 }
             }
 
-            if (column2.ColumnDefault != column1.ColumnDefault)
+            if (column2.CharacterSetName != null && column1.CharacterSetName != null)
             {
-                diff.Differences.Add($"default value is different - is {column1.ColumnDefault} in database 1 and is {column2.ColumnDefault} in database 2");
+                if (column2.CharacterSetName != column1.CharacterSetName)
+                {
+                    diff.Differences.Add($"character set is different - is [{column1.CharacterSetName}] in database 1 and is [{column2.CharacterSetName}] in database 2");
+                }
             }
 
             if (column2.CollationName != null && column1.CollationName != null)
@@ -310,32 +326,19 @@
                 }
             }
 
-            if (column2.CharacterSetName != null && column1.CharacterSetName != null)
-            {
-                if (column2.CharacterSetName != column1.CharacterSetName)
-                {
-                    diff.Differences.Add($"character set is different - is [{column1.CharacterSetName}] in database 1 and is [{column2.CharacterSetName}] in database 2");
-                }
-            }
-
-            if (Database2.Tables[tableName].ColumnHasUniqueIndex(column2.ColumnName) != Database1.Tables[tableName].ColumnHasUniqueIndex(column1.ColumnName))
-            {
-                diff.Differences.Add($"{(Database1.Tables[tableName].ColumnHasUniqueIndex(column1.ColumnName) ? "has" : "does not have")} a unique constraint in database 1 and {(Database2.Tables[tableName].ColumnHasUniqueIndex(column2.ColumnName) ? "has" : "does not have")} a unique constraint in database 2");
-            }
-
             if (column2.IsFullTextIndexed != column1.IsFullTextIndexed)
             {
-                diff.Differences.Add($"is{(column1.IsFullTextIndexed ? string.Empty : " not")} full-text indexed in database 1 and is{(column1.IsFullTextIndexed ? string.Empty : " not")} full-text indexed in database 2");
+                diff.Differences.Add($"is{(column1.IsFullTextIndexed ? string.Empty : " not")} full-text indexed in database 1 and is{(column2.IsFullTextIndexed ? string.Empty : " not")} full-text indexed in database 2");
             }
 
             if (column2.IsComputed != column1.IsComputed)
             {
-                diff.Differences.Add($"is{(column1.IsComputed ? string.Empty : " not")} computed in database 1 and is{(column1.IsComputed ? string.Empty : " not")} computed in database 2");
+                diff.Differences.Add($"is{(column1.IsComputed ? string.Empty : " not")} computed in database 1 and is{(column2.IsComputed ? string.Empty : " not")} computed in database 2");
             }
 
             if (column2.IsIdentity != column1.IsIdentity)
             {
-                diff.Differences.Add($"is{(column1.IsIdentity ? string.Empty : " not")} an identity column in database 1 and is{(column1.IsIdentity ? string.Empty : " not")} an identity column in database 2");
+                diff.Differences.Add($"is{(column1.IsIdentity ? string.Empty : " not")} an identity column in database 1 and is{(column2.IsIdentity ? string.Empty : " not")} an identity column in database 2");
             }
 
             if (column2.IsIdentity && column1.IsIdentity)
@@ -359,6 +362,11 @@
             if (column2.IsColumnSet != column1.IsColumnSet)
             {
                 diff.Differences.Add($"is{(column1.IsColumnSet ? string.Empty : " not")} a column-set in database 1 and is{(column2.IsColumnSet ? string.Empty : " not")} a column-set in database 2");
+            }
+
+            if (Database2.Tables[tableName].ColumnHasUniqueIndex(column2.ColumnName) != Database1.Tables[tableName].ColumnHasUniqueIndex(column1.ColumnName))
+            {
+                diff.Differences.Add($"{(Database1.Tables[tableName].ColumnHasUniqueIndex(column1.ColumnName) ? "has" : "does not have")} a unique constraint in database 1 and {(Database2.Tables[tableName].ColumnHasUniqueIndex(column2.ColumnName) ? "has" : "does not have")} a unique constraint in database 2");
             }
 
             if (options.CompareProperties)
@@ -811,8 +819,8 @@
                             InspectObjectPermissions(view2, PermissionObjectType.View, diff);
                         }
 
-                        diff.ObjectDefinition1 = Database1.Synonyms[view2];
-                        diff.ObjectDefinition2 = Database2.Synonyms[view2];
+                        diff.ObjectDefinition1 = Database1.Views[view2];
+                        diff.ObjectDefinition2 = Database2.Views[view2];
 
                         diff.ExistsInDatabase2 = true;
                         break;

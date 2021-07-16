@@ -19,6 +19,12 @@
 
             new SqlDatabase("Server=localhost;Database=Northwind;Integrated Security=True")
                 .FriendlyName.Should().Be(expectedResult);
+
+            new SqlDatabase("Data Source=localhost;Database=Northwind;Integrated Security=True")
+                .FriendlyName.Should().Be(expectedResult);
+
+            new SqlDatabase("Server=localhost;Initial Catalog=Northwind;Integrated Security=True")
+                .FriendlyName.Should().Be(expectedResult);
         }
     }
 }

@@ -2,9 +2,21 @@
 {
     using Microsoft.Extensions.Options;
     using QuickCompareModel;
+    using QuickCompareModel.DatabaseSchema;
 
     public static class TestHelper
     {
+        public static DifferenceBuilder GetBuilderWithSingleTable(string tableName, string columnName)
+        {
+            var builder = GetBasicBuilder();
+            builder.Database1.Tables.Add(tableName, new SqlTable());
+            builder.Database1.Tables[tableName].ColumnDetails.Add(new SqlColumnDetail { ColumnName = columnName });
+            builder.Database2.Tables.Add(tableName, new SqlTable());
+            builder.Database2.Tables[tableName].ColumnDetails.Add(new SqlColumnDetail { ColumnName = columnName });
+
+            return builder;
+        }
+
         public static DifferenceBuilder GetBasicBuilder()
         {
             var options = GetDefaultOptions();

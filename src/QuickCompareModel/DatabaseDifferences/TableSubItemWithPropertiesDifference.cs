@@ -3,20 +3,36 @@
     using System.Collections.Generic;
     using System.Text;
 
+    /// <summary> Model to represent an element that can have extended properties and belongs to a table. </summary>
     public class TableSubItemWithPropertiesDifference
         : TableSubItemDifference
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="TableSubItemWithPropertiesDifference"/> class
+        /// with values determining whether the item exists in each database.
+        /// </summary>
+        /// <param name="existsInDatabase1">Value indicating whether the item exists in database 1.</param>
+        /// <param name="existsInDatabase2">Value indicating whether the item exists in database 2.</param>
         public TableSubItemWithPropertiesDifference(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
         }
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="TableSubItemWithPropertiesDifference"/> class
+        /// with values determining the type and whether the item exists in each database.
+        /// </summary>
+        /// <param name="existsInDatabase1">Value indicating whether the item exists in database 1.</param>
+        /// <param name="existsInDatabase2">Value indicating whether the item exists in database 2.</param>
+        /// <param name="itemType">String describing the element type.</param>
         public TableSubItemWithPropertiesDifference(bool existsInDatabase1, bool existsInDatabase2, string itemType)
             : base(existsInDatabase1, existsInDatabase2) => this.ItemType = itemType;
 
+        /// <summary> Set of models to represent extended properties and track the differences across two databases. </summary>
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
             = new Dictionary<string, ExtendedPropertyDifference>();
 
+        /// <summary> Gets a value indicating whether the extended property difference set has tracked any differences. </summary>
         public bool HasExtendedPropertyDifferences
         {
             get
@@ -33,8 +49,10 @@
             }
         }
 
+        /// <summary> Gets a value indicating whether any differences have been tracked. </summary>
         public override bool IsDifferent => base.IsDifferent || HasExtendedPropertyDifferences;
 
+        /// <summary> Gets a text description of the difference or returns an empty string if no difference is detected. </summary>
         public override string ToString()
         {
             if (!IsDifferent)
