@@ -79,7 +79,7 @@
                 {
                     if (tableDifference.Value.IsDifferent)
                     {
-                        section.AppendLine($"Table: [{tableDifference.Key}] {tableDifference.Value}");
+                        section.AppendLine($"Table: {tableDifference.Key} {tableDifference.Value}\r\n");
                     }
                 }
 

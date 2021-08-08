@@ -4,7 +4,8 @@
 				ep.[name] AS PROPERTY_NAME,
 				[value] AS PROPERTY_VALUE,
 				t.[name] AS TABLE_NAME,
-				s.[name] AS INDEX_NAME
+				s.[name] AS INDEX_NAME,
+				SCHEMA_NAME(t.[schema_id]) AS TABLE_SCHEMA
 FROM			sys.extended_properties AS ep
 LEFT OUTER JOIN	sys.objects AS o
 					ON o.object_id = ep.major_id

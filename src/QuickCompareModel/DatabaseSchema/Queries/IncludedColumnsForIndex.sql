@@ -11,4 +11,5 @@ INNER JOIN	sys.columns AS clmns
 ON			clmns.object_id = ic.object_id AND clmns.column_id = ic.column_id
 WHERE		(i.name = @IndexName)
 AND			(tbl.name = @TableName)
+AND			(tbl.schema_id = SCHEMA_ID(@TableSchema))
 ORDER BY	ic.key_ordinal

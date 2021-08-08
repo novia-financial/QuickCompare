@@ -7,6 +7,8 @@
     {
         public bool IsPrimaryKey { get; set; }
 
+        public string TableSchema { get; set; }
+
         public string TableName { get; set; }
 
         public string IndexName { get; set; }

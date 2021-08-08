@@ -19,12 +19,7 @@
         /// <param name="options">Option settings for the database comparison.</param>
         public DifferenceBuilder(IOptions<QuickCompareOptions> options)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
-            this.options = options.Value;
+            this.options = options.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         /// <summary>

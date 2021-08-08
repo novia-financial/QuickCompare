@@ -41,8 +41,11 @@
             else if (Differences.Count > 1)
             {
                 sb.Append($"\r\n{TabIndent} - ");
-                sb.Append(string.Join($"\r\n{TabIndent} - ", Differences.ToArray()));
-                sb.Append("\r\n");
+                sb.AppendLine(string.Join($"\r\n{TabIndent} - ", Differences.ToArray()));
+            }
+            else
+            {
+                sb.Append("\r\n"); // (only extended-property differences exist)
             }
 
             return sb.ToString();

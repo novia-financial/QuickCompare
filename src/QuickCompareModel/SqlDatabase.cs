@@ -73,15 +73,15 @@
         public void PopulateSchemaModel()
         {
             using var connection = new SqlConnection(this.connectionString);
-            LoadTableNames(connection);
+            LoadFullyQualifiedTableNames(connection);
 
             if (options.CompareIndexes)
             {
-                foreach (var table in Tables.Keys)
+                foreach (var fullyQualifiedTableName in Tables.Keys)
                 {
-                    LoadIndexes(connection, table);
+                    LoadIndexes(connection, fullyQualifiedTableName);
 
-                    foreach (var index in Tables[table].Indexes)
+                    foreach (var index in Tables[fullyQualifiedTableName].Indexes)
                     {
                         LoadIncludedColumnsForIndex(connection, index);
                     }
@@ -134,28 +134,33 @@
 
         #region Load methods
 
-        private void LoadTableNames(SqlConnection connection)
+        private void LoadFullyQualifiedTableNames(SqlConnection connection)
         {
             using var command = new SqlCommand(LoadQueryFromResource("TableNames"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
             {
-                Tables.Add(dr.GetString(0), new SqlTable());
+                var fullyQualifiedTableName = $"[{dr.GetString(0)}].[{dr.GetString(1)}]";
+                Tables.Add(fullyQualifiedTableName, new SqlTable());
             }
         }
 
-        private void LoadIndexes(SqlConnection connection, string table)
+        private void LoadIndexes(SqlConnection connection, string fullyQualifiedTableName)
         {
             using var command = new SqlCommand("sp_helpindex", connection);
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@objname", table);
+            command.Parameters.AddWithValue("@objname", fullyQualifiedTableName);
 
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
             {
-                Tables[table].Indexes.Add(LoadIndex(dr));
+                var index = LoadIndex(dr);
+                index.TableSchema = fullyQualifiedTableName.GetSchemaName();
+                index.TableName = fullyQualifiedTableName.GetObjectName();
+
+                Tables[fullyQualifiedTableName].Indexes.Add(index);
             }
         }
 
@@ -164,6 +169,7 @@
             using var command = new SqlCommand(LoadQueryFromResource("IncludedColumnsForIndex"), connection);
             command.Parameters.AddWithValue("@TableName", index.TableName);
             command.Parameters.AddWithValue("@IndexName", index.IndexName);
+            command.Parameters.AddWithValue("@TableSchema", index.TableSchema);
 
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -184,10 +190,11 @@
             while (dr.Read())
             {
                 var relation = LoadRelation(dr);
+                var fullyQualifiedChildTable = relation.ChildTable.PrependSchemaName(relation.ChildSchema);
 
-                if (Tables.ContainsKey(relation.ChildTable))
+                if (Tables.ContainsKey(fullyQualifiedChildTable))
                 {
-                    Tables[relation.ChildTable].Relations.Add(relation);
+                    Tables[fullyQualifiedChildTable].Relations.Add(relation);
                 }
             }
         }
@@ -200,10 +207,11 @@
             while (dr.Read())
             {
                 var detail = LoadColumnDetail(dr);
+                var fullyQualifiedTableName = detail.TableName.PrependSchemaName(detail.TableSchema);
 
-                if (Tables.ContainsKey(detail.TableName))
+                if (Tables.ContainsKey(fullyQualifiedTableName))
                 {
-                    Tables[detail.TableName].ColumnDetails.Add(detail);
+                    Tables[fullyQualifiedTableName].ColumnDetails.Add(detail);
                 }
             }
         }
@@ -249,10 +257,11 @@
             while (dr.Read())
             {
                 var trigger = LoadTrigger(dr);
+                var fullyQualifiedTableName = trigger.TableName.PrependSchemaName(trigger.TableSchema);
 
-                if (Tables.ContainsKey(trigger.TableName))
+                if (Tables.ContainsKey(fullyQualifiedTableName))
                 {
-                    Tables[trigger.TableName].Triggers.Add(trigger);
+                    Tables[fullyQualifiedTableName].Triggers.Add(trigger);
                 }
             }
         }
@@ -401,6 +410,9 @@
                     case "RELATION_NAME":
                         relation.RelationName = dr.GetString(i);
                         break;
+                    case "CHILD_SCHEMA":
+                        relation.ChildSchema = dr.GetString(i);
+                        break;
                     case "CHILD_TABLE":
                         relation.ChildTable = dr.GetString(i);
                         break;
@@ -409,6 +421,9 @@
                         break;
                     case "UNIQUE_CONSTRAINT_NAME":
                         relation.UniqueConstraintName = dr.GetString(i);
+                        break;
+                    case "PARENT_SCHEMA":
+                        relation.ParentSchema = dr.GetString(i);
                         break;
                     case "PARENT_TABLE":
                         relation.ParentTable = dr.GetString(i);

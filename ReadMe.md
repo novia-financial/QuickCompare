@@ -57,4 +57,3 @@ A very basic sample application is in the `ConsoleTestQuickCompare` project. Mod
 - Unit test the "HasDifferences" functions
 - Unit test the IOptions
 - In console sample, demo the status event
-- Refactor support for databases with multiple schemas (other than dbo)
