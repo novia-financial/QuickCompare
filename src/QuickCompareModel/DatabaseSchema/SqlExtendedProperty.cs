@@ -18,6 +18,8 @@ namespace QuickCompareModel.DatabaseSchema
 
         public string IndexName { get; set; }
 
+        public string TableSchema { get; set; }
+
         public string FullId => !string.IsNullOrEmpty(ObjectName)
                     ? string.IsNullOrEmpty(ColumnName)
                         ? $"[{ObjectName}].[{PropertyName}].[{Type}]"

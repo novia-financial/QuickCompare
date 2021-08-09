@@ -304,6 +304,7 @@
             {
                 var i = 0;
                 var name = string.Empty;
+                var schema = string.Empty;
                 var def = string.Empty;
                 while (i < dr.FieldCount)
                 {
@@ -311,6 +312,9 @@
                     {
                         case "VIEW_NAME":
                             name = dr.GetString(i);
+                            break;
+                        case "TABLE_SCHEMA":
+                            schema = dr.GetString(i);
                             break;
                         case "VIEW_DEFINITION":
                             def = dr.GetString(i);
@@ -320,7 +324,7 @@
                     i++;
                 }
 
-                Views.Add(name, def);
+                Views.Add(name.PrependSchemaName(schema), def);
             }
         }
 
@@ -333,6 +337,7 @@
             {
                 var routine = new SqlUserRoutine();
                 var name = string.Empty;
+                var schema = string.Empty;
                 var i = 0;
                 while (i < dr.FieldCount)
                 {
@@ -340,6 +345,9 @@
                     {
                         case "ROUTINE_NAME":
                             name = dr.GetString(i);
+                            break;
+                        case "ROUTINE_SCHEMA":
+                            schema = dr.GetString(i);
                             break;
                         case "ROUTINE_TYPE":
                             routine.RoutineType = dr.GetString(i);
@@ -349,7 +357,7 @@
                     i++;
                 }
 
-                UserRoutines.Add(name, routine);
+                UserRoutines.Add(name.PrependSchemaName(schema), routine);
             }
         }
 
@@ -359,7 +367,7 @@
             command.Parameters.Add("@routinename", SqlDbType.VarChar, 128);
             foreach (var routine in UserRoutines.Keys)
             {
-                command.Parameters["@routinename"].Value = routine;
+                command.Parameters["@routinename"].Value = routine.GetObjectName();
                 connection.Open();
                 using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
                 while (dr.Read())
@@ -666,6 +674,12 @@
                         if (!dr.IsDBNull(i))
                         {
                             property.TableName = dr.GetString(i);
+                        }
+                        break;
+                    case "TABLE_SCHEMA":
+                        if (!dr.IsDBNull(i))
+                        {
+                            property.TableSchema = dr.GetString(i);
                         }
                         break;
                 }
