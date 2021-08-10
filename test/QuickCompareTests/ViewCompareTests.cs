@@ -23,7 +23,7 @@
             var diff = builder.Differences.ViewDifferences[viewName];
             diff.ExistsInDatabase1.Should().BeFalse();
             diff.ExistsInDatabase2.Should().BeTrue();
-            diff.ToString().Should().Be("does not exist in database 1");
+            diff.ToString().Should().Be("does not exist in database 1\r\n");
         }
 
         [Fact]
@@ -44,7 +44,7 @@
             var diff = builder.Differences.ViewDifferences[viewName];
             diff.ExistsInDatabase1.Should().BeTrue();
             diff.ExistsInDatabase2.Should().BeFalse();
-            diff.ToString().Should().Be("does not exist in database 2");
+            diff.ToString().Should().Be("does not exist in database 2\r\n");
         }
 
         [Fact]

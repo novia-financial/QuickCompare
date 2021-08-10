@@ -28,7 +28,7 @@
             var diff = builder.Differences.TableDifferences[tableName].ColumnDifferences[columnName];
             diff.ExistsInDatabase1.Should().BeFalse();
             diff.ExistsInDatabase2.Should().BeTrue();
-            diff.ToString().Should().Be("does not exist in database 1");
+            diff.ToString().Should().Be("does not exist in database 1\r\n");
         }
 
         [Fact]
@@ -53,7 +53,7 @@
             var diff = builder.Differences.TableDifferences[tableName].ColumnDifferences[columnName];
             diff.ExistsInDatabase1.Should().BeTrue();
             diff.ExistsInDatabase2.Should().BeFalse();
-            diff.ToString().Should().Be("does not exist in database 2");
+            diff.ToString().Should().Be("does not exist in database 2\r\n");
         }
 
         [Fact]
@@ -97,7 +97,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("ordinal position is different");
+            diff1.ToString().Should().Contain("ordinal position");
         }
 
         [Fact]
@@ -121,7 +121,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("default value is different");
+            diff1.ToString().Should().Contain("default value");
         }
 
         [Fact]
@@ -170,7 +170,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("data type is different");
+            diff1.ToString().Should().Contain("data type");
         }
 
         [Fact]
@@ -194,7 +194,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("max length is different");
+            diff1.ToString().Should().Contain("max length");
         }
 
         [Fact]
@@ -218,7 +218,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("character octet length is different");
+            diff1.ToString().Should().Contain("character octet length");
         }
 
         [Fact]
@@ -242,7 +242,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("numeric precision is different");
+            diff1.ToString().Should().Contain("numeric precision");
         }
 
         [Fact]
@@ -266,7 +266,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("numeric precision radix is different");
+            diff1.ToString().Should().Contain("numeric precision");
         }
 
         [Fact]
@@ -290,7 +290,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("numeric scale is different");
+            diff1.ToString().Should().Contain("numeric scale");
         }
 
         [Fact]
@@ -314,7 +314,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("datetime precision is different");
+            diff1.ToString().Should().Contain("datetime precision");
         }
 
         [Fact]
@@ -338,7 +338,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("character set is different");
+            diff1.ToString().Should().Contain("character set");
         }
 
         [Fact]
@@ -362,7 +362,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("collation is different");
+            diff1.ToString().Should().Contain("collation");
         }
 
         [Fact]
@@ -463,7 +463,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("identity seed is different");
+            diff1.ToString().Should().Contain("identity seed");
         }
 
         [Fact]
@@ -489,7 +489,7 @@
             var diff1 = tableDiff.ColumnDifferences[columnName];
             diff1.ExistsInBothDatabases.Should().BeTrue();
             diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("identity increment is different");
+            diff1.ToString().Should().Contain("identity increment");
         }
 
         [Fact]
