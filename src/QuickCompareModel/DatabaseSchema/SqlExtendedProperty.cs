@@ -8,6 +8,8 @@ namespace QuickCompareModel.DatabaseSchema
 
         public string ObjectName { get; set; }
 
+        public string ObjectSchema { get; set; }
+
         public string ColumnName { get; set; }
 
         public string PropertyName { get; set; }

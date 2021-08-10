@@ -18,6 +18,8 @@ namespace QuickCompareModel.DatabaseSchema
 
         public string ColumnName { get; set; }
 
+        public string ObjectSchema { get; set; }
+
         public string FullId => $"[{RoleName}].[{UserName}].[{PermissionType}].[{PermissionState}].[{ObjectType}].[{ObjectName}].[{ColumnName}]";
 
         public PermissionObjectType Type => ObjectType switch

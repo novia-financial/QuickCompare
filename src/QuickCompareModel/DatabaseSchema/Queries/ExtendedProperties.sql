@@ -1,5 +1,6 @@
 ﻿SELECT			class_desc AS PROPERTY_TYPE,
 				o.[name] AS OBJECT_NAME,
+				SCHEMA_NAME(o.[schema_id]) AS OBJECT_SCHEMA,
 				c.[name] AS COLUMN_NAME,
 				ep.[name] AS PROPERTY_NAME,
 				[value] AS PROPERTY_VALUE,

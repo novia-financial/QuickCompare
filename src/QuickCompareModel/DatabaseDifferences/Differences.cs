@@ -16,6 +16,10 @@
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
             = new Dictionary<string, ExtendedPropertyDifference>();
 
+        /// <summary> Set of models to represent permissions and track the differences across two databases. </summary>
+        public Dictionary<string, BaseDifference> PermissionDifferences { get; set; }
+            = new Dictionary<string, BaseDifference>();
+
         /// <summary> Set of models to represent tables and track the differences across two databases. </summary>
         public Dictionary<string, TableDifference> TableDifferences { get; set; }
             = new Dictionary<string, TableDifference>();
@@ -37,8 +41,8 @@
             = new Dictionary<string, DatabaseObjectDifference>();
 
         /// <summary> Gets a value indicating whether any differences have been tracked. </summary>
-        public bool HasDifferences => ExtendedPropertyDifferences.Count + TableDifferences.Count + FunctionDifferences.Count +
-            StoredProcedureDifferences.Count + ViewDifferences.Count + SynonymDifferences.Count > 0;
+        public bool HasDifferences => ExtendedPropertyDifferences.Count + PermissionDifferences.Count + TableDifferences.Count + 
+            FunctionDifferences.Count + StoredProcedureDifferences.Count + ViewDifferences.Count + SynonymDifferences.Count > 0;
 
         /// <summary> Gets a report of the differences, whether any were detected or not. </summary>
         public override string ToString()
@@ -73,13 +77,31 @@
                 }
             }
 
+            if (PermissionDifferences.Count > 0)
+            {
+                foreach (var prop in PermissionDifferences)
+                {
+                    if (!prop.Value.ExistsInBothDatabases)
+                    {
+                        section.Append($"Permission: {prop.Key} {prop.Value}");
+                    }
+                }
+
+                if (section.Length > 0)
+                {
+                    output.Append("\r\nPERMISSION DIFFERENCES\r\n\r\n");
+                    output.Append(section);
+                    section.Length = 0;
+                }
+            }
+
             if (TableDifferences.Count > 0)
             {
                 foreach (var tableDifference in TableDifferences)
                 {
                     if (tableDifference.Value.IsDifferent)
                     {
-                        section.AppendLine($"Table: {tableDifference.Key} {tableDifference.Value}\r\n");
+                        section.AppendLine($"Table: {tableDifference.Key} {tableDifference.Value}");
                     }
                 }
 
@@ -97,7 +119,7 @@
                 {
                     if (viewDifference.Value.IsDifferent)
                     {
-                        section.AppendLine($"View: [{viewDifference.Key}] {viewDifference.Value}");
+                        section.AppendLine($"View: {viewDifference.Key} {viewDifference.Value}");
                     }
                 }
 
@@ -115,7 +137,7 @@
                 {
                     if (functionDifference.Value.IsDifferent)
                     {
-                        section.AppendLine($"Function: [{functionDifference.Key}] {functionDifference.Value}");
+                        section.AppendLine($"Function: {functionDifference.Key} {functionDifference.Value}");
                     }
                 }
 
@@ -133,7 +155,7 @@
                 {
                     if (procedureDifference.Value.IsDifferent)
                     {
-                        section.AppendLine($"Stored procedure: [{procedureDifference.Key}] {procedureDifference.Value}");
+                        section.AppendLine($"Stored procedure: {procedureDifference.Key} {procedureDifference.Value}");
                     }
                 }
 

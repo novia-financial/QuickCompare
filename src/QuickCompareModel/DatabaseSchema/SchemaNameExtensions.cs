@@ -35,7 +35,7 @@
         }
 
         public static string PrependSchemaName(this string objectName, string schemaName) =>
-            $"[{schemaName}].[{objectName}]";
+            string.IsNullOrEmpty(schemaName) ? objectName : $"[{schemaName}].[{objectName}]";
 
         public static string StripSquareBrackets(this string input) =>
             input

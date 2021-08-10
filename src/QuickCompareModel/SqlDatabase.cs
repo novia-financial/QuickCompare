@@ -624,6 +624,12 @@
                             permission.ColumnName = dr.GetString(i);
                         }
                         break;
+                    case "OBJECT_SCHEMA":
+                        if (!dr.IsDBNull(i))
+                        {
+                            permission.ObjectSchema = dr.GetString(i);
+                        }
+                        break;
                 }
 
                 i++;
@@ -647,6 +653,12 @@
                         if (!dr.IsDBNull(i))
                         {
                             property.ObjectName = dr.GetString(i);
+                        }
+                        break;
+                    case "OBJECT_SCHEMA":
+                        if (!dr.IsDBNull(i))
+                        {
+                            property.ObjectSchema = dr.GetString(i);
                         }
                         break;
                     case "COLUMN_NAME":

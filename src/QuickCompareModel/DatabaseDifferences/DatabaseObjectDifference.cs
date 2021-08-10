@@ -106,7 +106,7 @@
                 {
                     if (!diff.Value.ExistsInBothDatabases)
                     {
-                        sb.Append($"{TabIndent}Permission: [{diff.Key}] {diff.Value}");
+                        sb.Append($"{TabIndent}Permission: {diff.Key} {diff.Value}");
                     }
                 }
             }

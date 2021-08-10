@@ -8,6 +8,9 @@
     /// </summary>
     public interface IDifferenceBuilder
     {
+        /// <summary> Gets or sets the options for the comparison. </summary>
+        QuickCompareOptions Options { get; set; }
+
         /// <summary> Gets or sets the model for database 1. </summary>
         SqlDatabase Database1 { get; set; }
 

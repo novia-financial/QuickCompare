@@ -230,7 +230,7 @@
                 {
                     if (!permissionDiff.Value.ExistsInBothDatabases)
                     {
-                        sb.Append($"{TabIndent}Permission: [{permissionDiff.Key}] {permissionDiff.Value}");
+                        sb.Append($"{TabIndent}Permission: {permissionDiff.Key} {permissionDiff.Value}");
                     }
                 }
             }

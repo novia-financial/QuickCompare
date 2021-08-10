@@ -13,7 +13,8 @@
 			[PERMISSION_STATE] = perm.[state_desc],
 			[OBJECT_TYPE] = obj.type_desc,
 			[OBJECT_NAME] = OBJECT_NAME(perm.major_id),
-			[COLUMN_NAME] = col.[name]
+			[COLUMN_NAME] = col.[name],
+			[OBJECT_SCHEMA] = OBJECT_SCHEMA_NAME(perm.major_id)
 FROM		sys.database_principals princ
 LEFT JOIN	sys.login_token ulogin
 				ON princ.[sid] = ulogin.[sid]

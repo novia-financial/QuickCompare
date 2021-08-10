@@ -36,7 +36,7 @@
 
             if (Differences.Count == 1)
             {
-                sb.AppendLine($"- {Differences.Single()}");
+                sb.AppendLine(Differences.Single());
             }
             else if (Differences.Count > 1)
             {

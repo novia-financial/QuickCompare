@@ -27,7 +27,7 @@
         public bool ExistsInBothDatabases => ExistsInDatabase1 && ExistsInDatabase2;
 
         /// <summary> Gets a text description of the difference or returns an empty string if no difference is detected. </summary>
-        public override string ToString() => ExistsInBothDatabases ? string.Empty : $"does not exist in database {(ExistsInDatabase1 ? 2 : 1)}";
+        public override string ToString() => ExistsInBothDatabases ? string.Empty : $"does not exist in database {(ExistsInDatabase1 ? 2 : 1)}\r\n";
 
         protected const string TabIndent = "     ";
 
@@ -44,8 +44,6 @@
 
             definition = StripMultiLineComments(definition);
             definition = StripInlineComments(definition);
-            definition = StripDbo(definition);
-            definition = StripSquareBrackets(definition);
 
             if (stripWhiteSpace)
             {
@@ -60,10 +58,6 @@
         private static string StripMultiLineComments(string input) => Regex.Replace(input, @"/\*[^*]*\*+([^/*][^*]*\*+)*/", " ");
 
         private static string StripInlineComments(string input) => Regex.Replace(input, @"(--(.*|[\r\n]))", string.Empty);
-
-        private static string StripDbo(string input) => Regex.Replace(input, @"(\[dbo\]\.)|(dbo\.)", string.Empty);
-
-        private static string StripSquareBrackets(string input) => Regex.Replace(input, @"(\[)|(\])", string.Empty);
 
         private static string StripCommaWhitespace(string input) => Regex.Replace(input, @"\s*,\s*", ",");
 
