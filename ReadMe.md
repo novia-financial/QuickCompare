@@ -53,7 +53,6 @@ A very basic sample application is in the `ConsoleTestQuickCompare` project. Mod
 
 - Add test for formatting single/multiple results
 - Change SQL queries to select fields as word-cased, then use nameof() in the loaders
-- Include the database-level permission, CONNECT
 - Unit test the "HasDifferences" functions
 - Unit test the IOptions
 - In console sample, demo the status event

@@ -9,20 +9,31 @@
     {
         static void Main(string[] args)
         {
-            // Get a DifferenceBuilder instance from the DI container
-            var provider = GetServiceProvider();
-            var builder = provider.GetService<IDifferenceBuilder>();
+            try
+            {
+                // Get a DifferenceBuilder instance from the DI container
+                var provider = GetServiceProvider();
+                var builder = provider.GetService<IDifferenceBuilder>();
 
-            // Generate a report of differences
-            builder.BuildDifferences();
-            var report = builder.Differences.ToString();
+                // Generate a report of differences
+                builder.BuildDifferences();
+                var report = builder.Differences.ToString();
 
-            // Output the report to the console and the trace
-            Console.Write(report);
-            Trace.Write(report);
-
-            // Wait for user input (rather than just closing the window)
-            Console.ReadKey();
+                // Output the report
+                Console.Write(report);
+                Trace.Write(report);
+            }
+            catch (Exception ex)
+            {
+                // Display error details to the output
+                Console.Write(ex.ToString());
+                Trace.Write(ex.ToString());
+            }
+            finally
+            {
+                // Wait for user input (rather than just closing the window)
+                Console.ReadKey();
+            }
         }
 
         /// <summary> Gets the <see cref="IServiceProvider"/> DI container configured in <see cref="Startup"/>. </summary>
