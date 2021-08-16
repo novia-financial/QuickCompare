@@ -537,13 +537,22 @@
                         }
                         break;
                     case "IS_FULL_TEXT_INDEXED":
-                        detail.IsFullTextIndexed = dr.GetInt32(i) == 1;
+                        if (!dr.IsDBNull(i))
+                        {
+                            detail.IsFullTextIndexed = dr.GetInt32(i) == 1;
+                        }
                         break;
                     case "IS_COMPUTED":
-                        detail.IsComputed = dr.GetInt32(i) == 1;
+                        if (!dr.IsDBNull(i))
+                        {
+                            detail.IsComputed = dr.GetInt32(i) == 1;
+                        }
                         break;
                     case "IS_IDENTITY":
-                        detail.IsIdentity = dr.GetInt32(i) == 1;
+                        if (!dr.IsDBNull(i))
+                        {
+                            detail.IsIdentity = dr.GetInt32(i) == 1;
+                        }
                         break;
                     case "IDENTITY_SEED":
                         if (!dr.IsDBNull(i))
@@ -585,7 +594,7 @@
             {
                 switch (dr.GetName(i))
                 {
-                    case "UserName":
+                    case "USER_NAME":
                         permission.UserName = dr.GetString(i);
                         break;
                     case "ROLE_NAME":

@@ -1,17 +1,12 @@
-﻿SELECT		[UserName] =
-				CASE princ.[type]
-				WHEN 'S' THEN princ.[name]
-				WHEN 'U' THEN ulogin.[name]
-				COLLATE Latin1_General_CI_AI END,
-			[UserType] =
+﻿SELECT		[USER_NAME] = ISNULL(ulogin.[name], princ.[name]),
+			[USER_TYPE] =
 				CASE princ.[type]
 				WHEN 'S' THEN 'SQL User'
 				WHEN 'U' THEN 'Windows User' END,
-			[USER_NAME] = princ.[name],
 			[ROLE_NAME] = null,
 			[PERMISSION_TYPE] = perm.[permission_name],
 			[PERMISSION_STATE] = perm.[state_desc],
-			[OBJECT_TYPE] = obj.type_desc,
+			[OBJECT_TYPE] = ISNULL(obj.type_desc, perm.class_desc),
 			[OBJECT_NAME] = OBJECT_NAME(perm.major_id),
 			[COLUMN_NAME] = col.[name],
 			[OBJECT_SCHEMA] = OBJECT_SCHEMA_NAME(perm.major_id)

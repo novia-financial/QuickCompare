@@ -26,12 +26,14 @@ namespace QuickCompareModel.DatabaseSchema
         {
             "SQL_STORED_PROCEDURE" => PermissionObjectType.SqlStoredProcedure,
             "USER_TABLE" => PermissionObjectType.UserTable,
+            "SYSTEM_TABLE" => PermissionObjectType.SystemTable,
             "SYNONYM" => PermissionObjectType.Synonym,
             "VIEW" => PermissionObjectType.View,
             "SQL_SCALAR_FUNCTION" => PermissionObjectType.SqlFunction,
             "SQL_TABLE_VALUED_FUNCTION" => PermissionObjectType.SqlFunction,
             "SQL_INLINE_TABLE_VALUED_FUNCTION" => PermissionObjectType.SqlFunction,
-            _ => PermissionObjectType.Database,
+            "DATABASE" => PermissionObjectType.Database,
+            _ => PermissionObjectType.Unknown,
         };
 
         public override string ToString() => PermissionType == "REFERENCES"
