@@ -575,7 +575,7 @@
             {
                 if (!Differences.TableDifferences[fullyQualifiedTableName].IndexDifferences.ContainsKey(index2.IndexName))
                 {
-                    Differences.TableDifferences[fullyQualifiedTableName].IndexDifferences.Add(index2.IndexName, new TableSubItemWithPropertiesDifference(false, true));
+                    Differences.TableDifferences[fullyQualifiedTableName].IndexDifferences.Add(index2.IndexName, new TableSubItemWithPropertiesDifference(false, true, index2.ItemType));
                 }
             }
         }
