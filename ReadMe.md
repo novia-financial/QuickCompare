@@ -39,6 +39,8 @@ Inspecting two databases for differences is quick, but it is far from instantane
 
 The `DifferenceBuilder` class raises an event when the status changes - subscribe to `ComparisonStatusChanged` to return an instance of `StatusChangedEventArgs`. This EventArgs instance has a property named `StatusMessage` which could be presented in a UI layer or used to measure timing of steps.
 
+An example of consuming this event can be found in the sample application.
+
 ### Database SQL queries
 
 The SQL queries are located in the folder DatabaseSchema/Queries.
