@@ -47,12 +47,3 @@ The SQL queries are located in the folder DatabaseSchema/Queries.
 
 A very basic sample application is in the `ConsoleTestQuickCompare` project. Modify the connection strings in `appsettings.json` to run the application for local testing.
 
----
-
-#### ToDo list
-
-- Add test for formatting single/multiple results
-- Change SQL queries to select fields as word-cased, then use nameof() in the loaders
-- Unit test the "HasDifferences" functions
-- Unit test the IOptions
-- In console sample, demo the status event
