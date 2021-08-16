@@ -76,7 +76,7 @@
         /// </summary>
         public void PopulateSchemaModel()
         {
-            OnStatusChanged("Connecting");
+            RaiseStatusChanged("Connecting");
             using var connection = new SqlConnection(this.connectionString);
             LoadFullyQualifiedTableNames(connection);
 
@@ -137,17 +137,14 @@
             return stream != null ? new StreamReader(stream).ReadToEnd() : string.Empty;
         }
 
-        protected virtual void OnStatusChanged(string message)
-        {
-            var handler = this.LoaderStatusChanged;
-            handler?.Invoke(this, new StatusChangedEventArgs(message));
-        }
+        protected virtual void RaiseStatusChanged(string message) =>
+            this.LoaderStatusChanged?.Invoke(this, new StatusChangedEventArgs(message));
 
         #region Load methods
 
         private void LoadFullyQualifiedTableNames(SqlConnection connection)
         {
-            OnStatusChanged("Reading tables");
+            RaiseStatusChanged("Reading tables");
             using var command = new SqlCommand(LoadQueryFromResource("TableNames"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -160,7 +157,7 @@
 
         private void LoadIndexes(SqlConnection connection, string fullyQualifiedTableName)
         {
-            OnStatusChanged("Reading indexes");
+            RaiseStatusChanged("Reading indexes");
             using var command = new SqlCommand("sp_helpindex", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@objname", fullyQualifiedTableName);
@@ -179,7 +176,7 @@
 
         private void LoadIncludedColumnsForIndex(SqlConnection connection, SqlIndex index)
         {
-            OnStatusChanged("Reading index included columns");
+            RaiseStatusChanged("Reading index included columns");
             using var command = new SqlCommand(LoadQueryFromResource("IncludedColumnsForIndex"), connection);
             command.Parameters.AddWithValue("@TableName", index.TableName);
             command.Parameters.AddWithValue("@IndexName", index.IndexName);
@@ -198,7 +195,7 @@
 
         private void LoadRelations(SqlConnection connection)
         {
-            OnStatusChanged("Reading relations");
+            RaiseStatusChanged("Reading relations");
             using var command = new SqlCommand(LoadQueryFromResource("Relations"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -216,7 +213,7 @@
 
         private void LoadColumnDetails(SqlConnection connection)
         {
-            OnStatusChanged("Reading column details");
+            RaiseStatusChanged("Reading column details");
             using var command = new SqlCommand(LoadQueryFromResource("ColumnDetails"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -234,7 +231,7 @@
 
         private void LoadRolePermissions(SqlConnection connection)
         {
-            OnStatusChanged("Reading role permissions");
+            RaiseStatusChanged("Reading role permissions");
             using var command = new SqlCommand(LoadQueryFromResource("RolePermissions"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -246,7 +243,7 @@
 
         private void LoadUserPermissions(SqlConnection connection)
         {
-            OnStatusChanged("Reading user permissions");
+            RaiseStatusChanged("Reading user permissions");
             using var command = new SqlCommand(LoadQueryFromResource("UserPermissions"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -258,7 +255,7 @@
 
         private void LoadExtendedProperties(SqlConnection connection)
         {
-            OnStatusChanged("Reading extended properties");
+            RaiseStatusChanged("Reading extended properties");
             using var command = new SqlCommand(LoadQueryFromResource("ExtendedProperties"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -270,7 +267,7 @@
 
         private void LoadTriggers(SqlConnection connection)
         {
-            OnStatusChanged("Reading triggers");
+            RaiseStatusChanged("Reading triggers");
             using var command = new SqlCommand(LoadQueryFromResource("Triggers"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -288,7 +285,7 @@
 
         private void LoadSynonyms(SqlConnection connection)
         {
-            OnStatusChanged("Reading synonyms");
+            RaiseStatusChanged("Reading synonyms");
             using var command = new SqlCommand(LoadQueryFromResource("Synonyms"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -318,7 +315,7 @@
 
         private void LoadViews(SqlConnection connection)
         {
-            OnStatusChanged("Reading views");
+            RaiseStatusChanged("Reading views");
             using var command = new SqlCommand(LoadQueryFromResource("Views"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -352,7 +349,7 @@
 
         private void LoadUserRoutines(SqlConnection connection)
         {
-            OnStatusChanged("Reading user routines");
+            RaiseStatusChanged("Reading user routines");
             using var command = new SqlCommand(LoadQueryFromResource("UserRoutines"), connection);
             connection.Open();
             using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
@@ -386,7 +383,7 @@
 
         private void LoadUserRoutineDefinitions(SqlConnection connection)
         {
-            OnStatusChanged("Reading user routine definitions");
+            RaiseStatusChanged("Reading user routine definitions");
             using var command = new SqlCommand(LoadQueryFromResource("UserRoutineDefinitions"), connection);
             command.Parameters.Add("@routinename", SqlDbType.VarChar, 128);
             foreach (var routine in UserRoutines.Keys)

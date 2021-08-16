@@ -62,7 +62,7 @@
                 Database2 = this.Database2.FriendlyName,
             };
 
-            OnStatusChanged("Inspecting differences");
+            RaiseStatusChanged("Inspecting differences");
 
             if (this.Options.CompareProperties)
             {
@@ -87,19 +87,12 @@
                 InspectViews();
                 InspectRoutines();
             }
+
+            RaiseStatusChanged("Difference inspection completed...");
         }
 
-        protected virtual void OnStatusChanged(string message)
-        {
-            var handler = this.ComparisonStatusChanged;
-            handler?.Invoke(this, new StatusChangedEventArgs(message));
-        }
-
-        private void HandleDatabase1StatusChangedEvent(object sender, StatusChangedEventArgs e) =>
-            OnStatusChanged($"{e.StatusMessage} for database 1");
-
-        private void HandleDatabase2StatusChangedEvent(object sender, StatusChangedEventArgs e) =>
-            OnStatusChanged($"{e.StatusMessage} for database 2");
+        protected virtual void RaiseStatusChanged(string message) =>
+            this.ComparisonStatusChanged?.Invoke(this, new StatusChangedEventArgs(message));
 
         private void LoadDatabaseSchemas()
         {
@@ -116,12 +109,10 @@
                 throw new InvalidOperationException("Connection strings must target different database instances");
             }
 
-            OnStatusChanged("Inspecting schema for database 1");
-            Database1.LoaderStatusChanged += HandleDatabase1StatusChangedEvent;
+            Database1.LoaderStatusChanged += (object sender, StatusChangedEventArgs e) => RaiseStatusChanged($"{e.StatusMessage} for database 1");
             Database1.PopulateSchemaModel();
 
-            OnStatusChanged("Inspecting schema for database 2");
-            Database2.LoaderStatusChanged += HandleDatabase2StatusChangedEvent;
+            Database2.LoaderStatusChanged += (object sender, StatusChangedEventArgs e) => RaiseStatusChanged($"{e.StatusMessage} for database 2");
             Database2.PopulateSchemaModel();
         }
 
