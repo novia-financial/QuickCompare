@@ -1,6 +1,7 @@
 ﻿namespace QuickCompareModel
 {
     using System;
+    using System.Threading;
     using Microsoft.Extensions.Options;
     using QuickCompareModel.DatabaseDifferences;
     using QuickCompareModel.DatabaseSchema;
@@ -15,10 +16,8 @@
         /// Initialises a new instance of the <see cref="DifferenceBuilder"/> class.
         /// </summary>
         /// <param name="options">Option settings for the database comparison.</param>
-        public DifferenceBuilder(IOptions<QuickCompareOptions> options)
-        {
+        public DifferenceBuilder(IOptions<QuickCompareOptions> options) =>
             this.Options = options.Value ?? throw new ArgumentNullException(nameof(options));
-        }
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DifferenceBuilder"/> class with ready <see cref="SqlDatabase"/> instances.
@@ -109,11 +108,22 @@
                 throw new InvalidOperationException("Connection strings must target different database instances");
             }
 
-            Database1.LoaderStatusChanged += (object sender, StatusChangedEventArgs e) => RaiseStatusChanged($"{e.StatusMessage} for database 1");
-            Database1.PopulateSchemaModel();
+            var thread1 = ExecuteDatabaseLoaderAsync(Database1, 1);
+            var thread2 = ExecuteDatabaseLoaderAsync(Database2, 2);
 
-            Database2.LoaderStatusChanged += (object sender, StatusChangedEventArgs e) => RaiseStatusChanged($"{e.StatusMessage} for database 2");
-            Database2.PopulateSchemaModel();
+            // Block current thread until the others have completed
+            thread1.Join();
+            thread2.Join();
+        }
+
+        private Thread ExecuteDatabaseLoaderAsync(SqlDatabase database, int instanceNumber)
+        {
+            database.LoaderStatusChanged += (object sender, StatusChangedEventArgs e) =>
+                RaiseStatusChanged($"{e.StatusMessage} for database {instanceNumber}");
+
+            var thread = new Thread(database.PopulateSchemaModel);
+            thread.Start();
+            return thread;
         }
 
         private void InspectDatabaseExtendedProperties()
