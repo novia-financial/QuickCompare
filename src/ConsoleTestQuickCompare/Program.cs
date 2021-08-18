@@ -11,31 +11,26 @@
         {
             try
             {
-                // Get a DifferenceBuilder instance from the DI container
                 var provider = GetServiceProvider();
                 var builder = provider.GetService<IDifferenceBuilder>();
 
-                // Add (optional) status event handler
-                builder.ComparisonStatusChanged += HandleStatusChangeEvent;
+                builder.ComparisonStatusChanged += HandleStatusChangeEvent; // (optional status handler)
 
-                // Generate a report of differences
+                // Generate report
                 builder.BuildDifferences();
                 var report = builder.Differences.ToString();
 
-                // Output the report
-                Console.WriteLine();
+                Console.WriteLine("\r\n--------------------------------");
                 Console.Write(report);
                 Trace.Write(report);
             }
             catch (Exception ex)
             {
-                // Display error details to the output
                 Console.Write(ex.ToString());
                 Trace.Write(ex.ToString());
             }
             finally
             {
-                // Wait for user input (rather than just closing the window)
                 Console.ReadKey();
             }
         }

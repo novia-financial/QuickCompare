@@ -108,6 +108,7 @@
                 throw new InvalidOperationException("Connection strings must target different database instances");
             }
 
+            // Populate both schema models
             var thread1 = ExecuteDatabaseLoaderAsync(Database1, 1);
             var thread2 = ExecuteDatabaseLoaderAsync(Database2, 2);
 

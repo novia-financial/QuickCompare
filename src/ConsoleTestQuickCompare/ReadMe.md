@@ -1,8 +1,10 @@
 ﻿## QuickCompare example
 
+[Return to main project](../ReadMe.md)
+
 #### Instructions
 
-Modify the two connection strings in ``appsettings.json`` and run the project.
+Modify the two connection strings in ``appsettings.json`` and run the project. _There are many other option flags that you can toggle as required._
 
 #### Sample output
 
