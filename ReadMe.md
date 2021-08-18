@@ -49,4 +49,4 @@ The SQL queries are located in the folder DatabaseSchema/Queries. They do not re
 
 A very basic sample application is in the `ConsoleTestQuickCompare` project. Modify the connection strings in `appsettings.json` to run the application for local testing.
 
-[View sample application](/ConsoleTestQuickCompare/ReadMe.md)
+[View sample application](/src/ConsoleTestQuickCompare/ReadMe.md)
