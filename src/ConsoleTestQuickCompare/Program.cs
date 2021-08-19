@@ -14,13 +14,12 @@
                 var provider = GetServiceProvider();
                 var builder = provider.GetService<IDifferenceBuilder>();
 
-                builder.ComparisonStatusChanged += HandleStatusChangeEvent; // (optional status handler)
-
-                // Generate report
+                builder.ComparisonStatusChanged += OnComparisonStatusChanged;
                 builder.BuildDifferences();
-                var report = builder.Differences.ToString();
 
                 Console.WriteLine("\r\n--------------------------------");
+
+                var report = builder.Differences.ToString();
                 Console.Write(report);
                 Trace.Write(report);
             }
@@ -44,12 +43,9 @@
             return services.BuildServiceProvider();
         }
 
-        private static void HandleStatusChangeEvent(object sender, StatusChangedEventArgs e)
+        private static void OnComparisonStatusChanged(object sender, StatusChangedEventArgs e)
         {
-            // Write each status event to the same line (padded right to clear previous status)
             Console.Write($"\r{e.StatusMessage,-50}");
-
-            // Write to trace for debugging
             Trace.WriteLine(e.StatusMessage);
         }
     }
