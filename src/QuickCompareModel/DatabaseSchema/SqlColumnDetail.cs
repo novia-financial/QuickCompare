@@ -32,6 +32,10 @@
 
         public string CollationName { get; set; }
 
+        public string DomainSchema { get; set; }
+
+        public string DomainName { get; set; }
+
         public bool IsFullTextIndexed { get; set; }
 
         public bool IsComputed { get; set; }
@@ -45,6 +49,8 @@
         public bool IsSparse { get; set; }
 
         public bool IsColumnSet { get; set; }
+
+        public bool IsRowGuid { get; set; }
 
         public string FullId => $"[{TableName}].[{ColumnName}]";
     }

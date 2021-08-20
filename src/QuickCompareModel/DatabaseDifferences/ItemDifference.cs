@@ -7,15 +7,15 @@
     /// <summary>
     /// Model to represent an element that belongs to a table.
     /// </summary>
-    public class TableSubItemDifference : BaseDifference
+    public class ItemDifference : BaseDifference
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="TableSubItemDifference"/> class
+        /// Initialises a new instance of the <see cref="ItemDifference"/> class
         /// with values determining whether the item exists in each database.
         /// </summary>
         /// <param name="existsInDatabase1">Value indicating whether the item exists in database 1.</param>
         /// <param name="existsInDatabase2">Value indicating whether the item exists in database 2.</param>
-        public TableSubItemDifference(bool existsInDatabase1, bool existsInDatabase2)
+        public ItemDifference(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
         }

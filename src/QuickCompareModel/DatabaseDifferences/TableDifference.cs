@@ -18,20 +18,20 @@
         }
 
         /// <summary> Set of models to represent columns and track the differences across two databases. </summary>
-        public Dictionary<string, TableSubItemWithPropertiesDifference> ColumnDifferences { get; set; }
-            = new Dictionary<string, TableSubItemWithPropertiesDifference>();
+        public Dictionary<string, ItemWithPropertiesDifference> ColumnDifferences { get; set; }
+            = new Dictionary<string, ItemWithPropertiesDifference>();
 
         /// <summary> Set of models to represent columns and track the differences across two databases. </summary>
-        public Dictionary<string, TableSubItemDifference> RelationshipDifferences { get; set; }
-            = new Dictionary<string, TableSubItemDifference>();
+        public Dictionary<string, ItemDifference> RelationshipDifferences { get; set; }
+            = new Dictionary<string, ItemDifference>();
 
         /// <summary> Set of models to represent indexes and track the differences across two databases. </summary>
-        public Dictionary<string, TableSubItemWithPropertiesDifference> IndexDifferences { get; set; }
-            = new Dictionary<string, TableSubItemWithPropertiesDifference>();
+        public Dictionary<string, ItemWithPropertiesDifference> IndexDifferences { get; set; }
+            = new Dictionary<string, ItemWithPropertiesDifference>();
 
         /// <summary> Set of models to represent triggers and track the differences across two databases. </summary>
-        public Dictionary<string, TableSubItemDifference> TriggerDifferences { get; set; }
-            = new Dictionary<string, TableSubItemDifference>();
+        public Dictionary<string, ItemDifference> TriggerDifferences { get; set; }
+            = new Dictionary<string, ItemDifference>();
 
         /// <summary> Set of models to represent extended properties and track the differences across two databases. </summary>
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }

@@ -55,6 +55,9 @@
         /// <summary> Gets or sets a list of <see cref="SqlTable"/> instances, indexed by table name. </summary>
         public Dictionary<string, SqlTable> Tables { get; set; } = new Dictionary<string, SqlTable>();
 
+        /// <summary> Gets or sets a list of <see cref="SqlUserType"/> instances, indexed by name. </summary>
+        public Dictionary<string, SqlUserType> UserTypes { get; set; } = new Dictionary<string, SqlUserType>();
+
         /// <summary> Gets or sets a list of database views, indexed by view name. </summary>
         public Dictionary<string, string> Views { get; set; } = new Dictionary<string, string>();
 
@@ -95,6 +98,11 @@
 
             LoadRelations(connection);
             LoadColumnDetails(connection);
+
+            if (options.CompareUserTypes)
+            {
+                LoadUserTypes(connection);
+            }
 
             if (options.ComparePermissions)
             {
@@ -226,6 +234,19 @@
                 {
                     Tables[fullyQualifiedTableName].ColumnDetails.Add(detail);
                 }
+            }
+        }
+
+        private void LoadUserTypes(SqlConnection connection)
+        {
+            RaiseStatusChanged("Reading user types");
+            using var command = new SqlCommand(LoadQueryFromResource("UserTypes"), connection);
+            connection.Open();
+            using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {
+                var userType = LoadUserType(dr);
+                UserTypes.Add(userType.CustomTypeName.PrependSchemaName(userType.SchemaName), userType);
             }
         }
 
@@ -557,6 +578,18 @@
                             detail.CollationName = dr.GetString(i);
                         }
                         break;
+                    case "DOMAIN_SCHEMA":
+                        if (!dr.IsDBNull(i))
+                        {
+                            detail.DomainSchema = dr.GetString(i);
+                        }
+                        break;
+                    case "DOMAIN_NAME":
+                        if (!dr.IsDBNull(i))
+                        {
+                            detail.DomainName = dr.GetString(i);
+                        }
+                        break;
                     case "IS_FULL_TEXT_INDEXED":
                         if (!dr.IsDBNull(i))
                         {
@@ -599,12 +632,73 @@
                             detail.IsColumnSet = dr.GetInt32(i) == 1;
                         }
                         break;
+                    case "IS_ROW_GUID":
+                        if (!dr.IsDBNull(i))
+                        {
+                            detail.IsRowGuid = dr.GetInt32(i) == 1;
+                        }
+                        break;
                 }
 
                 i++;
             }
 
             return detail;
+        }
+
+        private static SqlUserType LoadUserType(SqlDataReader dr)
+        {
+            var i = 0;
+            var userType = new SqlUserType();
+            while(i < dr.FieldCount)
+            {
+                switch (dr.GetName(i))
+                {
+                    case "custom_type_name":
+                        userType.CustomTypeName = dr.GetString(i);
+                        break;
+                    case "schema_name":
+                        userType.SchemaName = dr.GetString(i);
+                        break;
+                    case "underlying_type_name":
+                        userType.UnderlyingTypeName = dr.GetString(i);
+                        break;
+                    case "precision":
+                        if (!dr.IsDBNull(i))
+                        {
+                            userType.Precision = dr.GetInt32(i);
+                        }
+                        break;
+                    case "scale":
+                        if (!dr.IsDBNull(i))
+                        {
+                            userType.Scale = dr.GetInt32(i);
+                        }
+                        break;
+                    case "max_length":
+                        if (!dr.IsDBNull(i))
+                        {
+                            userType.MaxLength = dr.GetInt32(i);
+                        }
+                        break;
+                    case "is_nullable":
+                        userType.IsNullable = dr.GetInt32(i) == 1;
+                        break;
+                    case "collation_name":
+                        if (!dr.IsDBNull(i))
+                        {
+                            userType.CollationName = dr.GetString(i);
+                        }
+                        break;
+                    case "is_assembly_type":
+                        userType.IsAssemblyType = dr.GetInt32(i) == 1;
+                        break;
+                }
+
+                i++;
+            }
+
+            return userType;
         }
 
         private static SqlPermission LoadPermission(SqlDataReader dr)

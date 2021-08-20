@@ -64,5 +64,10 @@
         /// Gets or sets a value indicating whether to compare ordinal position of columns.
         /// </summary>
         public bool CompareOrdinalPositions { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to compare user types.
+        /// </summary>
+        public bool CompareUserTypes { get; set; } = true;
     }
 }

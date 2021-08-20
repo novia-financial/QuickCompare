@@ -16,6 +16,7 @@
     <None Remove="DatabaseSchema\Queries\UserPermissions.sql" />
     <None Remove="DatabaseSchema\Queries\UserRoutineDefinitions.sql" />
     <None Remove="DatabaseSchema\Queries\UserRoutines.sql" />
+    <None Remove="DatabaseSchema\Queries\UserTypes.sql" />
     <None Remove="DatabaseSchema\Queries\Views.sql" />
   </ItemGroup>
 
@@ -34,6 +35,7 @@
     <EmbeddedResource Include="DatabaseSchema\Queries\UserPermissions.sql" />
     <EmbeddedResource Include="DatabaseSchema\Queries\UserRoutineDefinitions.sql" />
     <EmbeddedResource Include="DatabaseSchema\Queries\UserRoutines.sql" />
+    <EmbeddedResource Include="DatabaseSchema\Queries\UserTypes.sql" />
     <EmbeddedResource Include="DatabaseSchema\Queries\Views.sql" />
   </ItemGroup>
 

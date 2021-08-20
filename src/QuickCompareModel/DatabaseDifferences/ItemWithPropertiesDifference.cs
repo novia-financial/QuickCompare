@@ -4,28 +4,28 @@
     using System.Text;
 
     /// <summary> Model to represent an element that can have extended properties and belongs to a table. </summary>
-    public class TableSubItemWithPropertiesDifference
-        : TableSubItemDifference
+    public class ItemWithPropertiesDifference
+        : ItemDifference
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="TableSubItemWithPropertiesDifference"/> class
+        /// Initialises a new instance of the <see cref="ItemWithPropertiesDifference"/> class
         /// with values determining whether the item exists in each database.
         /// </summary>
         /// <param name="existsInDatabase1">Value indicating whether the item exists in database 1.</param>
         /// <param name="existsInDatabase2">Value indicating whether the item exists in database 2.</param>
-        public TableSubItemWithPropertiesDifference(bool existsInDatabase1, bool existsInDatabase2)
+        public ItemWithPropertiesDifference(bool existsInDatabase1, bool existsInDatabase2)
             : base(existsInDatabase1, existsInDatabase2)
         {
         }
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="TableSubItemWithPropertiesDifference"/> class
+        /// Initialises a new instance of the <see cref="ItemWithPropertiesDifference"/> class
         /// with values determining the type and whether the item exists in each database.
         /// </summary>
         /// <param name="existsInDatabase1">Value indicating whether the item exists in database 1.</param>
         /// <param name="existsInDatabase2">Value indicating whether the item exists in database 2.</param>
         /// <param name="itemType">String describing the element type.</param>
-        public TableSubItemWithPropertiesDifference(bool existsInDatabase1, bool existsInDatabase2, string itemType)
+        public ItemWithPropertiesDifference(bool existsInDatabase1, bool existsInDatabase2, string itemType)
             : base(existsInDatabase1, existsInDatabase2) => this.ItemType = itemType;
 
         /// <summary> Set of models to represent extended properties and track the differences across two databases. </summary>

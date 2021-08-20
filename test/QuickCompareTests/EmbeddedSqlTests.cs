@@ -81,6 +81,12 @@ namespace QuickCompareTests
                 .Should().MatchRegex(TextStartsWithSelectRegex);
 
         [Fact]
+        public void LoadUserTypesQueryFromResource_ReturnsDatabaseQuery() =>
+            new SqlDatabase(string.Empty)
+                .LoadQueryFromResource("UserTypes")
+                .Should().MatchRegex(TextStartsWithSelectRegex);
+
+        [Fact]
         public void LoadViewsQueryFromResource_ReturnsDatabaseQuery() =>
             new SqlDatabase(string.Empty)
                 .LoadQueryFromResource("Views")

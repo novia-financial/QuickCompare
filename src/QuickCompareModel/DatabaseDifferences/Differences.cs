@@ -6,37 +6,41 @@
     /// <summary> Model to hold lists of various differences between two databases. </summary>
     public class Differences
     {
-        /// <summary> Gets a friendly name for database 1. </summary>
+        /// <summary> Gets or sets a friendly name for database 1. </summary>
         public string Database1 { get; set; }
 
-        /// <summary> Gets a friendly name for database 2. </summary>
+        /// <summary> Gets or sets a friendly name for database 2. </summary>
         public string Database2 { get; set; }
 
-        /// <summary> Set of models to represent extended properties and track the differences across two databases. </summary>
+        /// <summary> Gets or sets a set of models to represent extended properties and track the differences across two databases. </summary>
         public Dictionary<string, ExtendedPropertyDifference> ExtendedPropertyDifferences { get; set; }
             = new Dictionary<string, ExtendedPropertyDifference>();
 
-        /// <summary> Set of models to represent permissions and track the differences across two databases. </summary>
+        /// <summary> Gets or sets a set of models to represent permissions and track the differences across two databases. </summary>
         public Dictionary<string, BaseDifference> PermissionDifferences { get; set; }
             = new Dictionary<string, BaseDifference>();
 
-        /// <summary> Set of models to represent tables and track the differences across two databases. </summary>
+        /// <summary> Gets or sets a set of models to represent tables and track the differences across two databases. </summary>
         public Dictionary<string, TableDifference> TableDifferences { get; set; }
             = new Dictionary<string, TableDifference>();
 
-        /// <summary> Set of models to represent functions and track the differences across two databases. </summary>
+        /// <summary> Gets or sets a set of models to represent user types and track the differences across two databases. </summary>
+        public Dictionary<string, ItemDifference> UserTypeDifferences { get; set; }
+            = new Dictionary<string, ItemDifference>();
+
+        /// <summary> Gets or sets a set of models to represent functions and track the differences across two databases. </summary>
         public Dictionary<string, DatabaseObjectDifference> FunctionDifferences { get; set; }
             = new Dictionary<string, DatabaseObjectDifference>();
 
-        /// <summary> Set of models to represent stored procedures and track the differences across two databases. </summary>
+        /// <summary> Gets or sets a set of models to represent stored procedures and track the differences across two databases. </summary>
         public Dictionary<string, DatabaseObjectDifference> StoredProcedureDifferences { get; set; }
             = new Dictionary<string, DatabaseObjectDifference>();
 
-        /// <summary> Set of models to represent views and track the differences across two databases. </summary>
+        /// <summary> Gets or sets a set of models to represent views and track the differences across two databases. </summary>
         public Dictionary<string, DatabaseObjectDifference> ViewDifferences { get; set; }
             = new Dictionary<string, DatabaseObjectDifference>();
 
-        /// <summary> Set of models to represent synonyms and track the differences across two databases. </summary>
+        /// <summary> Gets or sets a set of models to represent synonyms and track the differences across two databases. </summary>
         public Dictionary<string, DatabaseObjectDifference> SynonymDifferences { get; set; }
             = new Dictionary<string, DatabaseObjectDifference>();
 
@@ -108,6 +112,24 @@
                 if (section.Length > 0)
                 {
                     output.Append("\r\nTABLE DIFFERENCES\r\n\r\n");
+                    output.Append(section);
+                    section.Length = 0;
+                }
+            }
+
+            if (UserTypeDifferences.Count > 0)
+            {
+                foreach (var userTypeDifference in UserTypeDifferences)
+                {
+                    if (userTypeDifference.Value.IsDifferent)
+                    {
+                        section.AppendLine($"User type: {userTypeDifference.Key} {userTypeDifference.Value}");
+                    }
+                }
+
+                if (section.Length > 0)
+                {
+                    output.Append("\r\nUSER TYPE DIFFERENCES\r\n\r\n");
                     output.Append(section);
                     section.Length = 0;
                 }
