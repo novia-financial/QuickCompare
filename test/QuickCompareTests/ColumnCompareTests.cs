@@ -77,469 +77,134 @@
         }
 
         [Fact]
-        public void OrdinalPositionDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].OrdinalPosition = 2;
-            builder.Database2.Tables[tableName].ColumnDetails[0].OrdinalPosition = 1;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("ordinal position");
-        }
+        public void OrdinalPosition_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", OrdinalPosition = 1 }, "ordinal position")
+                .Should().BeTrue();
 
         [Fact]
-        public void ColumnDefaultDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].ColumnDefault = "foo";
-            builder.Database2.Tables[tableName].ColumnDetails[0].ColumnDefault = "bar";
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("default value");
-        }
+        public void ColumnDefault_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", ColumnDefault = "foobar" }, "default value")
+                .Should().BeTrue();
 
         [Fact]
-        public void IsNullableDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].IsNullable = true;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IsNullable = false;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("is allowed null");
-            diff1.ToString().Should().Contain("is not allowed null");
-        }
+        public void IsNullable_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsNullable = true }, "allowed null")
+                .Should().BeTrue();
 
         [Fact]
-        public void DataTypeDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].DataType = "foo";
-            builder.Database2.Tables[tableName].ColumnDetails[0].DataType = "bar";
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("data type");
-        }
+        public void DataType_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", DataType = "foobar" }, "data type")
+                .Should().BeTrue();
 
         [Fact]
-        public void CharacterMaxLengthDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].CharacterMaximumLength = 10;
-            builder.Database2.Tables[tableName].ColumnDetails[0].CharacterMaximumLength = 20;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("max length");
-        }
+        public void CharacterMaxLength_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", CharacterMaximumLength = 10 }, "max length")
+                .Should().BeTrue();
 
         [Fact]
-        public void CharacterOctetLengthDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].CharacterOctetLength = 2;
-            builder.Database2.Tables[tableName].ColumnDetails[0].CharacterOctetLength = 1;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("character octet length");
-        }
+        public void CharacterOctetLength_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", CharacterOctetLength = 10 }, "character octet length")
+                .Should().BeTrue();
 
         [Fact]
-        public void NumericPrecisionDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].NumericPrecision = 2;
-            builder.Database2.Tables[tableName].ColumnDetails[0].NumericPrecision = 1;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("numeric precision");
-        }
+        public void NumericPrecision_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", NumericPrecision = 2 }, "numeric precision")
+                .Should().BeTrue();
 
         [Fact]
-        public void NumericPrecisionRadixDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].NumericPrecisionRadix = 2;
-            builder.Database2.Tables[tableName].ColumnDetails[0].NumericPrecisionRadix = 1;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("numeric precision");
-        }
+        public void NumericPrecisionRadix_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", NumericPrecisionRadix = 2 }, "numeric precision radix")
+                .Should().BeTrue();
 
         [Fact]
-        public void NumericScaleDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].NumericScale = 2;
-            builder.Database2.Tables[tableName].ColumnDetails[0].NumericScale = 1;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("numeric scale");
-        }
+        public void NumericScale_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", NumericScale = 2 }, "numeric scale")
+                .Should().BeTrue();
 
         [Fact]
-        public void DateTimePrecisionDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].DatetimePrecision = 2;
-            builder.Database2.Tables[tableName].ColumnDetails[0].DatetimePrecision = 1;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("datetime precision");
-        }
+        public void DateTimePrecision_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", DatetimePrecision = 2 }, "datetime precision")
+                .Should().BeTrue();
 
         [Fact]
-        public void CharacterSetNameDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].CharacterSetName = "foo";
-            builder.Database2.Tables[tableName].ColumnDetails[0].CharacterSetName = "bar";
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("character set");
-        }
+        public void CharacterSetName_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", CharacterSetName = "foobar" }, "character set")
+                .Should().BeTrue();
 
         [Fact]
-        public void CollationNameDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].CollationName = "foo";
-            builder.Database2.Tables[tableName].ColumnDetails[0].CollationName = "bar";
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("collation");
-        }
+        public void CollationName_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", CollationName = "foobar" }, "collation")
+                .Should().BeTrue();
 
         [Fact]
-        public void IsFullTextIndexedDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].IsFullTextIndexed = true;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IsFullTextIndexed = false;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("is full-text indexed");
-            diff1.ToString().Should().Contain("is not full-text indexed");
-        }
+        public void DomainSchema_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", DomainSchema = "foobar" }, "custom datatype")
+                .Should().BeTrue();
 
         [Fact]
-        public void IsComputedDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].IsComputed = true;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IsComputed = false;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("is computed");
-            diff1.ToString().Should().Contain("is not computed");
-        }
+        public void DomainName_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", DomainName = "foobar" }, "custom datatype")
+                .Should().BeTrue();
 
         [Fact]
-        public void IsIdentityDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].IsIdentity = true;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IsIdentity = false;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("is an identity");
-            diff1.ToString().Should().Contain("is not an identity");
-        }
+        public void IsFullTextIndexed_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsFullTextIndexed = true }, "full-text indexed")
+                .Should().BeTrue();
 
         [Fact]
-        public void IdentitySeedDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].IsIdentity = true;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IsIdentity = true;
-            builder.Database1.Tables[tableName].ColumnDetails[0].IdentitySeed = 2;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IdentitySeed = 1;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("identity seed");
-        }
+        public void IsComputed_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsComputed = true }, "computed")
+                .Should().BeTrue();
 
         [Fact]
-        public void IdentityIncrementDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].IsIdentity = true;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IsIdentity = true;
-            builder.Database1.Tables[tableName].ColumnDetails[0].IdentityIncrement = 2;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IdentityIncrement = 1;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("identity increment");
-        }
+        public void IsIdentity_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsIdentity = true }, "an identity")
+                .Should().BeTrue();
 
         [Fact]
-        public void IsSparseDifference_IsReported()
-        {
-            // Arrange
-            var tableName = "Table1";
-            var columnName = "Column1";
-            var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
-
-            builder.Database1.Tables[tableName].ColumnDetails[0].IsSparse = true;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IsSparse = false;
-
-            // Act
-            builder.BuildDifferences();
-
-            // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("is sparse");
-            diff1.ToString().Should().Contain("is not sparse");
-        }
+        public void IdentitySeed_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsIdentity = true, IdentitySeed = 1 }, new SqlColumnDetail { ColumnName = "Column1", IsIdentity = true }, "identity seed")
+                .Should().BeTrue();
 
         [Fact]
-        public void IsColumnSetDifference_IsReported()
+        public void IdentityIncrement_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsIdentity = true, IdentityIncrement = 1 }, new SqlColumnDetail { ColumnName = "Column1", IsIdentity = true }, "identity increment")
+                .Should().BeTrue();
+
+        [Fact]
+        public void IsSparse_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsSparse = true }, "sparse")
+                .Should().BeTrue();
+
+        [Fact]
+        public void IsColumnSet_Difference_IsReported() => 
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsColumnSet = true }, "column-set")
+                .Should().BeTrue();
+
+        [Fact]
+        public void IsRowGuid_Difference_IsReported() =>
+            ComparisonResultContainsValue(new SqlColumnDetail { ColumnName = "Column1", IsRowGuid = true }, "row-guid")
+                .Should().BeTrue();
+
+        private bool ComparisonResultContainsValue(SqlColumnDetail columnDetails, string value) =>
+            ComparisonResultContainsValue(columnDetails, new SqlColumnDetail { ColumnName = "Column1" }, value);
+
+        private bool ComparisonResultContainsValue(SqlColumnDetail column1Details, SqlColumnDetail column2Details, string value)
         {
             // Arrange
             var tableName = "Table1";
             var columnName = "Column1";
             var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
 
-            builder.Database1.Tables[tableName].ColumnDetails[0].IsColumnSet = true;
-            builder.Database2.Tables[tableName].ColumnDetails[0].IsColumnSet = false;
+            builder.Database1.Tables[tableName].ColumnDetails[0] = column1Details;
+            builder.Database2.Tables[tableName].ColumnDetails[0] = column2Details;
 
             // Act
             builder.BuildDifferences();
 
             // Assert
-            var tableDiff = builder.Differences.TableDifferences[tableName];
-            tableDiff.ColumnDifferences.Should().ContainKey(columnName);
-
-            var diff1 = tableDiff.ColumnDifferences[columnName];
-            diff1.ExistsInBothDatabases.Should().BeTrue();
-            diff1.Differences.Count.Should().Be(1);
-            diff1.ToString().Should().Contain("is a column-set");
-            diff1.ToString().Should().Contain("is not a column-set");
+            var diff = builder.Differences.TableDifferences[tableName].ColumnDifferences[columnName];
+            return diff.ToString().Contains(value);
         }
     }
 }

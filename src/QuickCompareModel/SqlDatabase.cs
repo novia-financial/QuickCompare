@@ -5,6 +5,7 @@
     using System.Data;
     using System.Data.SqlClient;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Text.RegularExpressions;
     using QuickCompareModel.DatabaseSchema;
@@ -404,11 +405,12 @@
 
         private void LoadUserRoutineDefinitions(SqlConnection connection)
         {
-            RaiseStatusChanged("Reading user routine definitions");
             using var command = new SqlCommand(LoadQueryFromResource("UserRoutineDefinitions"), connection);
             command.Parameters.Add("@routinename", SqlDbType.VarChar, 128);
             foreach (var routine in UserRoutines.Keys)
             {
+                RaiseStatusChanged($"Reading routine definition {Array.IndexOf(UserRoutines.Keys.ToArray(), routine) + 1} of {UserRoutines.Count}");
+
                 command.Parameters["@routinename"].Value = routine.GetObjectName();
                 connection.Open();
                 using var dr = command.ExecuteReader(CommandBehavior.CloseConnection);

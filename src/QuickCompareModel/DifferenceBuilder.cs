@@ -113,7 +113,7 @@
                 throw new InvalidOperationException("Connection strings must target different database instances");
             }
 
-            // Populate both schema models
+            // Populate both schema models on their own threads
             var thread1 = ExecuteDatabaseLoaderAsync(Database1, 1);
             var thread2 = ExecuteDatabaseLoaderAsync(Database2, 2);
 
@@ -308,7 +308,7 @@
 
             if (column2.DataType != column1.DataType)
             {
-                diff.Differences.Add($"has different data type - is {column1.DataType.ToUpper()} in database 1 and is {column2.DataType.ToUpper()} in database 2");
+                diff.Differences.Add($"has different data type - is {column1.DataType} in database 1 and is {column2.DataType} in database 2");
             }
 
             if (column2.CharacterMaximumLength != column1.CharacterMaximumLength)

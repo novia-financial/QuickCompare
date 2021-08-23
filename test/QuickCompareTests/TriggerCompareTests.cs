@@ -57,7 +57,7 @@
         }
 
         [Fact]
-        public void IndexInBothDatabases_AreNotReported()
+        public void IndexInBothDatabases_IsNotReported()
         {
             // Arrange
             var builder = TestHelper.GetBasicBuilder();

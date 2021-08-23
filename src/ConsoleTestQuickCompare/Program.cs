@@ -45,7 +45,7 @@
 
         private static void OnComparisonStatusChanged(object sender, StatusChangedEventArgs e)
         {
-            Console.Write($"\r{e.StatusMessage,-50}");
+            Console.Write($"\r{e.StatusMessage,-70}");
             Trace.WriteLine(e.StatusMessage);
         }
     }
