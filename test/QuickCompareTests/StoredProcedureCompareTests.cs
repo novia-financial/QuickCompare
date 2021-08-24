@@ -63,7 +63,26 @@
 
             var diff = builder.Differences.StoredProcedureDifferences[StoredProcedureName];
             diff.ExistsInBothDatabases.Should().BeTrue();
-            diff.ToString().Should().Be(string.Empty);
+            diff.IsDifferent.Should().BeFalse();
+        }
+
+        [Fact]
+        public void StoredProcedureDefinitionDifference_IsReported()
+        {
+            // Arrange
+            var builder = TestHelper.GetBasicBuilder();
+            builder.Database1.UserRoutines.Add(StoredProcedureName, new SqlUserRoutine { RoutineType = StoredProcedureRoutineType, RoutineDefinition = "foo" });
+            builder.Database2.UserRoutines.Add(StoredProcedureName, new SqlUserRoutine { RoutineType = StoredProcedureRoutineType, RoutineDefinition = "bar" });
+
+            // Act
+            builder.BuildDifferences();
+
+            // Assert
+            builder.Differences.StoredProcedureDifferences.Should().ContainKey(StoredProcedureName);
+
+            var diff = builder.Differences.StoredProcedureDifferences[StoredProcedureName];
+            diff.ExistsInBothDatabases.Should().BeTrue();
+            diff.IsDifferent.Should().BeTrue();
         }
 
         [Fact]

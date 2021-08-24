@@ -63,7 +63,26 @@
 
             var diff = builder.Differences.FunctionDifferences[FunctionName];
             diff.ExistsInBothDatabases.Should().BeTrue();
-            diff.ToString().Should().Be(string.Empty);
+            diff.IsDifferent.Should().BeFalse();
+        }
+
+        [Fact]
+        public void FunctionDefinitionDifference_IsReported()
+        {
+            // Arrange
+            var builder = TestHelper.GetBasicBuilder();
+            builder.Database1.UserRoutines.Add(FunctionName, new SqlUserRoutine { RoutineType = FunctionRoutineType, RoutineDefinition = "FooBar" });
+            builder.Database2.UserRoutines.Add(FunctionName, new SqlUserRoutine { RoutineType = FunctionRoutineType, RoutineDefinition = "BarFoo" });
+
+            // Act
+            builder.BuildDifferences();
+
+            // Assert
+            builder.Differences.FunctionDifferences.Should().ContainKey(FunctionName);
+
+            var diff = builder.Differences.FunctionDifferences[FunctionName];
+            diff.ExistsInBothDatabases.Should().BeTrue();
+            diff.IsDifferent.Should().BeTrue();
         }
     }
 }
