@@ -52,7 +52,7 @@
                 _ => e.StatusMessage,
             };
 
-            Console.Write($"\r{message,-70}");
+            Console.Write($"\r{message,-80}");
             Trace.WriteLine($"[{DateTime.UtcNow:HH:mm:ss.ff}] {message}");
         }
     }
