@@ -19,7 +19,7 @@
             builder.Database2.Tables[tableName].Triggers.Add(new SqlTrigger { TriggerName = triggerName });
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[tableName]
@@ -28,7 +28,9 @@
             var diff = builder.Differences.TableDifferences[tableName].TriggerDifferences[triggerName];
             diff.ExistsInDatabase1.Should().BeFalse();
             diff.ExistsInDatabase2.Should().BeTrue();
-            diff.ToString().Should().Be("does not exist in database 1\r\n");
+
+            builder.Differences.TableDifferences[tableName]
+                .ToString().Should().Contain($"Trigger: {triggerName} does not exist in database 1");
         }
 
         [Fact]
@@ -44,7 +46,7 @@
             builder.Database2.Tables.Add(tableName, new SqlTable());
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[tableName]
@@ -53,7 +55,9 @@
             var diff = builder.Differences.TableDifferences[tableName].TriggerDifferences[triggerName];
             diff.ExistsInDatabase1.Should().BeTrue();
             diff.ExistsInDatabase2.Should().BeFalse();
-            diff.ToString().Should().Be("does not exist in database 2\r\n");
+
+            builder.Differences.TableDifferences[tableName]
+                .ToString().Should().Contain($"Trigger: {triggerName} does not exist in database 2");
         }
 
         [Fact]
@@ -70,7 +74,7 @@
             builder.Database2.Tables[tableName].Triggers.Add(new SqlTrigger { TriggerName = triggerName, TableName = tableName });
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[tableName]

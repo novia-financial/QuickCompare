@@ -27,7 +27,7 @@
 
         public Dictionary<string, bool> IncludedColumns { get; set; } = new Dictionary<string, bool>();
 
-        public string FullId => $"[{TableName}].[{IndexName}]";
+        public string FullId => $"[{TableSchema}].[{TableName}].[{IndexName}]";
 
         public string ColumnsToString => FlagListToString(Columns);
 

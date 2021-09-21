@@ -1,4 +1,4 @@
-﻿namespace TestQuickCompare
+﻿namespace ConsoleTestQuickCompare
 {
     using System;
     using System.Diagnostics;
@@ -15,18 +15,18 @@
                 var builder = provider.GetService<IDifferenceBuilder>();
 
                 builder.ComparisonStatusChanged += OnComparisonStatusChanged;
-                builder.BuildDifferences();
+                builder.BuildDifferencesAsync().Wait();
 
                 Console.WriteLine("\r\n--------------------------------");
 
-                var report = builder.Differences.ToString();
+                string report = builder.Differences.ToString();
                 Console.Write(report);
                 Trace.Write(report);
             }
             catch (Exception ex)
             {
-                Console.Write(ex.ToString());
-                Trace.Write(ex.ToString());
+                Console.Write(ex);
+                Trace.Write(ex);
             }
             finally
             {
@@ -45,8 +45,15 @@
 
         private static void OnComparisonStatusChanged(object sender, StatusChangedEventArgs e)
         {
-            Console.Write($"\r{e.StatusMessage,-70}");
-            Trace.WriteLine(e.StatusMessage);
+            string message = e.DatabaseInstance switch
+            {
+                DatabaseInstance.Database1 => $"{e.StatusMessage} for database 1",
+                DatabaseInstance.Database2 => $"{e.StatusMessage} for database 2",
+                _ => e.StatusMessage,
+            };
+
+            Console.Write($"\r{message,-70}");
+            Trace.WriteLine($"[{DateTime.UtcNow:HH:mm:ss.ff}] {message}");
         }
     }
 }

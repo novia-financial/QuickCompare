@@ -1,6 +1,8 @@
 ﻿namespace QuickCompareModel
 {
     using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using QuickCompareModel.DatabaseDifferences;
 
     /// <summary>
@@ -20,10 +22,14 @@
         /// <summary> Model representing the differences between two databases. </summary>
         Differences Differences { get; set; }
 
+        /// <summary> Dictionary of definitions that are different. </summary>
+        Dictionary<string, (string, string)> DefinitionDifferences { get; set; }
+
         /// <summary> Handler for when the status message changes. </summary>
         event EventHandler<StatusChangedEventArgs> ComparisonStatusChanged;
 
         /// <summary> Inspect two database schemas and build the <see cref="Differences"/> model. </summary>
-        void BuildDifferences();
+        /// <returns> A <see cref="Task"/> that represents the asynchronous operation. </returns>
+        Task BuildDifferencesAsync();
     }
 }

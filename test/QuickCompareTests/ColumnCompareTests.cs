@@ -19,7 +19,7 @@
             builder.Database2.Tables[tableName].ColumnDetails.Add(new SqlColumnDetail { ColumnName = columnName });
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[tableName]
@@ -28,7 +28,9 @@
             var diff = builder.Differences.TableDifferences[tableName].ColumnDifferences[columnName];
             diff.ExistsInDatabase1.Should().BeFalse();
             diff.ExistsInDatabase2.Should().BeTrue();
-            diff.ToString().Should().Be("does not exist in database 1\r\n");
+
+            builder.Differences.TableDifferences[tableName]
+                .ToString().Should().Contain($"[{columnName}] does not exist in database 1");
         }
 
         [Fact]
@@ -44,7 +46,7 @@
             builder.Database2.Tables.Add(tableName, new SqlTable());
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[tableName]
@@ -53,7 +55,9 @@
             var diff = builder.Differences.TableDifferences[tableName].ColumnDifferences[columnName];
             diff.ExistsInDatabase1.Should().BeTrue();
             diff.ExistsInDatabase2.Should().BeFalse();
-            diff.ToString().Should().Be("does not exist in database 2\r\n");
+
+            builder.Differences.TableDifferences[tableName]
+                .ToString().Should().Contain($"[{columnName}] does not exist in database 2");
         }
 
         [Fact]
@@ -65,7 +69,7 @@
             var builder = TestHelper.GetBuilderWithSingleTable(tableName, columnName);
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[tableName]
@@ -200,7 +204,7 @@
             builder.Database2.Tables[tableName].ColumnDetails[0] = column2Details;
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             var diff = builder.Differences.TableDifferences[tableName].ColumnDifferences[columnName];

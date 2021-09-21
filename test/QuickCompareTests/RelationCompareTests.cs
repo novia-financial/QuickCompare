@@ -21,7 +21,7 @@
             builder.Database2.Tables[TableName].Relations.Add(new SqlRelation { RelationName = RelationName });
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[TableName]
@@ -30,7 +30,9 @@
             var diff = builder.Differences.TableDifferences[TableName].RelationshipDifferences[RelationName];
             diff.ExistsInDatabase1.Should().BeFalse();
             diff.ExistsInDatabase2.Should().BeTrue();
-            diff.ToString().Should().Be("does not exist in database 1\r\n");
+
+            builder.Differences.TableDifferences[TableName]
+                .ToString().Should().Contain($"Relation: {RelationName} does not exist in database 1");
         }
 
         [Fact]
@@ -44,7 +46,7 @@
             builder.Database2.Tables.Add(TableName, new SqlTable());
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[TableName]
@@ -53,7 +55,9 @@
             var diff = builder.Differences.TableDifferences[TableName].RelationshipDifferences[RelationName];
             diff.ExistsInDatabase1.Should().BeTrue();
             diff.ExistsInDatabase2.Should().BeFalse();
-            diff.ToString().Should().Be("does not exist in database 2\r\n");
+
+            builder.Differences.TableDifferences[TableName]
+                .ToString().Should().Contain($"Relation: {RelationName} does not exist in database 2");
         }
 
         [Fact]
@@ -68,7 +72,7 @@
             builder.Database2.Tables[TableName].Relations.Add(new SqlRelation { RelationName = RelationName });
 
             // Act
-            builder.BuildDifferences();
+            builder.BuildDifferencesAsync().Wait();
 
             // Assert
             builder.Differences.TableDifferences[TableName]
